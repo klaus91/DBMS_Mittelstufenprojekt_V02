@@ -26,6 +26,8 @@ void ExportDialog::showExportDialog()
 
 void ExportDialog::abbrechenBtnClicked()
 {
+    ui->dateipfadLineEdit->setText("");
+    ui->dateinameLineEdit->setText("");
     this->close();
 }
 
@@ -45,9 +47,12 @@ void ExportDialog::okBtnClicked()
 {
     qDebug() << "Ok button clicked!";
 
-    QString pathAndFqName = ui->dateipfadLineEdit->text() + ui->dateinameLineEdit->text() + ui->formatComboBox->currentText();
-
+    QString path = ui->dateipfadLineEdit->text();
+    QString name = ui->dateinameLineEdit->text();
+    QString format = ui->formatComboBox->currentText();
     ParserCsv *csvP = new ParserCsv();
-    csvP->saveTable(pathAndFqName);
+    csvP->saveTable(path, name, format);
+    ui->dateipfadLineEdit->setText("");
+    ui->dateinameLineEdit->setText("");
     this->close();
 }

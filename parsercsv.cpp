@@ -4,6 +4,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QDebug>
+#include <Qdir>
 
 ParserCsv::ParserCsv()
 {
@@ -16,10 +17,10 @@ void ParserCsv::getTable(QString path)
     ParserCsv::openFile(path);
 }
 
-void ParserCsv::saveTable(QString pathAndFqName)
+void ParserCsv::saveTable(QString path, QString name, QString format)
 {
-    qDebug() << "saveTable called with: " << pathAndFqName;
-    writeFile(pathAndFqName);
+    qDebug() << "saveTable called with: " << path + name + format;
+    writeFile(path, name, format);
 }
 
 bool ParserCsv::openFile(QString path)
@@ -69,11 +70,32 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
     return lines;
 }
 
-bool ParserCsv::writeFile(QString pathAndFqName)
+bool ParserCsv::writeFile(QString path, QString name, QString format)
 {
-    if (pathAndFqName != "")
+    if (path != "")
     {
-        qDebug() << "writeFile called with: " << pathAndFqName;
+        qDebug() << "writeFile called with: " << path + name + format;
+        QDir dir;
+        QFile file(path + name + format);
+
+        if (!dir.exists(path))
+        {
+            dir.mkpath(path);
+            qDebug() << "New directory created.";
+            if (file.open(QIODevice::ReadWrite))
+                {
+                    qDebug()<<"New file created.";
+                }
+        }
+        else
+        {
+            if (file.open(QIODevice::ReadWrite))
+                {
+                    qDebug()<<"New file created.";
+                }
+        }
+
+
         return true;
     }
     else
