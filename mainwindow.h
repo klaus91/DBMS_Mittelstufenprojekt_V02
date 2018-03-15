@@ -32,7 +32,8 @@ public:
     ~MainWindow();
 
 public slots:
-    void doubleclickEvent(QModelIndex);
+    void doubleclickEvent();
+    void eintragSuchen();
 
 private:
     Ui::MainWindow      *ui;

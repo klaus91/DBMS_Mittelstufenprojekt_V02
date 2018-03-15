@@ -21,7 +21,6 @@ signals:
 
 public slots:
 
-    void eintragSuchen();
     void tabelleAnlegen();
     void tabelleLoeschen();
     void zeileAnlegen();

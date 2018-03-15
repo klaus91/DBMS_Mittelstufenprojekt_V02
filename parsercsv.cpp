@@ -16,9 +16,10 @@ void ParserCsv::getTable(QString path)
     ParserCsv::openFile(path);
 }
 
-void ParserCsv::saveTable(QString path)
+void ParserCsv::saveTable(QString pathAndFqName)
 {
-
+    qDebug() << "saveTable called with: " << pathAndFqName;
+    writeFile(pathAndFqName);
 }
 
 bool ParserCsv::openFile(QString path)
@@ -68,9 +69,18 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
     return lines;
 }
 
-bool ParserCsv::writeFile()
+bool ParserCsv::writeFile(QString pathAndFqName)
 {
-    return true;
+    if (pathAndFqName != "")
+    {
+        qDebug() << "writeFile called with: " << pathAndFqName;
+        return true;
+    }
+    else
+    {
+        qDebug() << "Error: incorrect filepath and/ or filename!";
+        return false;
+    }
 }
 
 bool ParserCsv::closeFile()

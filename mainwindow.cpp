@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_datenverwaltung = new Datenverwaltung();
     m_exportDialog = new ExportDialog();
 
-    connect(ui->sucheButton, SIGNAL(clicked()), m_datenverwaltung, SLOT(eintragSuchen()));
+    connect(ui->sucheButton, SIGNAL(clicked()), this, SLOT(eintragSuchen()));
     connect(ui->neueTabelleButton, SIGNAL(clicked()), m_datenverwaltung, SLOT(tabelleAnlegen()));
     connect(ui->loescheTabelleButton, SIGNAL(clicked()), m_datenverwaltung, SLOT(tabelleLoeschen()));
     connect(ui->neueZeileButton, SIGNAL(clicked()), m_datenverwaltung, SLOT(zeileAnlegen()));
@@ -19,8 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->loescheZeileButton, SIGNAL(clicked()), m_datenverwaltung, SLOT(zeileLoeschen()));
     connect(ui->loescheSpalteButton, SIGNAL(clicked()), m_datenverwaltung, SLOT(spalteLoeschen()));
     connect(ui->exportiereTabelleButton,SIGNAL(clicked()), m_exportDialog, SLOT(showExportDialog()));
-    connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent(QModelIndex)));
+    connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent()));
+    connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(eintragSuchen()));
 
+
+    MainWindow::eintragSuchen();
 }
 
 MainWindow::~MainWindow()
@@ -28,13 +31,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 /******************************************************************************
  * Funktion um CSV-Dateien im TreeView per Doppelklick zu oeffnen und
  * anzuzeigen
  *
  * https://forum.qt.io/topic/30494/solved-get-current-file-path-qtreeview/8
  ******************************************************************************/
-void MainWindow::doubleclickEvent(QModelIndex)
+void MainWindow::doubleclickEvent()
 {
     QModelIndex index = ui->myTreeView->currentIndex();
     QString path;
@@ -51,6 +55,24 @@ void MainWindow::doubleclickEvent(QModelIndex)
         ParserCsv *pCsv = new ParserCsv();
         pCsv->getTable(path);
         showTable(path);
+    }
+}
+
+/******************************************************************************
+ * Funktion zum aktivieren des Suche Buttons sowie
+ * zum filtern des Treeviews (Filter -> QSortFilterProxy?!)
+ ******************************************************************************/
+void MainWindow::eintragSuchen()
+{
+    if (ui->sucheLineEdit->text() != "")
+    {
+        ui->sucheButton->setEnabled(true);
+        qDebug() << "eintragSuchen called!/n";
+        qDebug() << ui->sucheLineEdit->text();
+    }
+    else
+    {
+        ui->sucheButton->setEnabled(false);
     }
 }
 

@@ -2,6 +2,8 @@
 #define EXPORTDIALOG_H
 
 #include <QDialog>
+#include <QDebug>
+#include "parsercsv.h"
 
 
 namespace Ui {
@@ -22,6 +24,9 @@ signals:
 public slots:
 
     void showExportDialog();
+    void abbrechenBtnClicked();
+    void namePathChanged();
+    void okBtnClicked();
 
 protected:
 
