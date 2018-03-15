@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,13 +28,30 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/******************************************************************************
+ * Funktion um CSV-Dateien im TreeView per Doppelklick zu oeffnen und
+ * anzuzeigen
+ *
+ * https://forum.qt.io/topic/30494/solved-get-current-file-path-qtreeview/8
+ ******************************************************************************/
 void MainWindow::doubleclickEvent(QModelIndex)
 {
-//    QModelIndexList test = ui->myTreeView->indexAt();
-//    qDebug() << "Test " <<
-//    qDebug() << "MyTreeview doubleclicked" << test;
+    QModelIndex index = ui->myTreeView->currentIndex();
+    QString path;
+    QFileInfo info = QFileInfo();
+    if (index.isValid())
+    {
+        info = m_model->fileInfo(index);
+        path = info.absoluteFilePath();
+        qDebug() << path;
+    }
 
-//    https://forum.qt.io/topic/30494/solved-get-current-file-path-qtreeview/8
+    if (path.contains(".csv"))
+    {
+        ParserCsv *pCsv = new ParserCsv();
+        pCsv->getTable(path);
+        showTable(path);
+    }
 }
 
 /******************************************************************************
@@ -41,44 +59,48 @@ void MainWindow::doubleclickEvent(QModelIndex)
  ******************************************************************************/
 void MainWindow::showDirectory()
 {
-    QFileSystemModel *model = new QFileSystemModel;
+    QFileSystemModel *m_model = new QFileSystemModel;
 
     QString mPath = "C:/";
 
-    model->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files);
-    model->setRootPath(mPath);
-    model->setReadOnly(true);
+    m_model->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files);
+    m_model->setRootPath(mPath);
+    m_model->setReadOnly(true);
 
-    ui->myTreeView->setModel(model);
-
+    ui->myTreeView->setModel(m_model);
 }
 
 /******************************************************************************
  * Funktion zum Anzeigen des Inhalts einer Datei im TableView
  ******************************************************************************/
-void MainWindow::showTable()
+void MainWindow::showTable(QString path)
 {
     ParserCsv *pCsv = new ParserCsv();
-    pCsv->getTable("C:/Users/folke/OneDrive/Documents/Versetzungsplan.csv");
-    QList<QStringList> myTable = pCsv->getMemberTable();
+    QList<QStringList> myTable;
 
-    int anzahlZeilen = myTable.count();
-    int anzahlSpalten = myTable[0].count();
-
-    QStandardItemModel *model = new QStandardItemModel(anzahlZeilen, anzahlSpalten, this);
-
-    for(int i = 0; i < anzahlSpalten; ++i)
+    if (!path.isEmpty())
     {
-        model->setHorizontalHeaderItem(i, new QStandardItem(myTable[0][i]));
-    }
+        pCsv->getTable(path);
+        myTable = pCsv->getMemberTable();
 
-    for (int outerCounter = 1; outerCounter < anzahlZeilen; ++outerCounter)
-    {
-        for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+        int anzahlZeilen = myTable.count();
+        int anzahlSpalten = myTable[0].count();
+
+        QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+
+        for(int i = 0; i < anzahlSpalten; ++i)
         {
-            model->setItem(outerCounter - 1, innerCounter, new QStandardItem(myTable[outerCounter][innerCounter]));
+            m_model->setHorizontalHeaderItem(i, new QStandardItem(myTable[0][i]));
         }
+
+        for (int outerCounter = 1; outerCounter < anzahlZeilen; ++outerCounter)
+        {
+            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+            {
+                m_model->setItem(outerCounter - 1, innerCounter, new QStandardItem (myTable[outerCounter][innerCounter]));
+            }
+        }
+        ui->myTableView->setModel(m_model);
     }
 
-    ui->myTableView->setModel(model);
 }

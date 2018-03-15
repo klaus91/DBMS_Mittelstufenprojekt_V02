@@ -1,19 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include "ui_mainwindow.h"
-#include <QTreeView>
-#include <QFileSystemModel>
-#include <QDirModel>
 #include <QDebug>
-#include <QString>
+#include <QDirModel>
+#include <QFileSystemModel>
+#include <QMainWindow>
 #include <QStandardItemModel>
-#include "datenverwaltung.h"
-#include "parser.h"
-#include "parsercsv.h"
+#include <QString>
+#include <QTreeView>
+#include <QItemSelectionModel>
+#include "ui_mainwindow.h"
 #include "datenverwaltung.h"
 #include "exportdialog.h"
+#include "parser.h"
+#include "parsercsv.h"
 
 
 namespace Ui {
@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void showDirectory();
-    void showTable();
+    void showTable(QString path);
 
     ~MainWindow();
 
@@ -35,9 +35,11 @@ public slots:
     void doubleclickEvent(QModelIndex);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow      *ui;
     Datenverwaltung     *m_datenverwaltung;
     ExportDialog        *m_exportDialog;
+    QFileSystemModel    *m_model;
+
 };
 
 #endif // MAINWINDOW_H

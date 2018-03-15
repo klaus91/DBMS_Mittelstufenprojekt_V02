@@ -7,7 +7,7 @@
 
 ParserCsv::ParserCsv()
 {
-//    Constructor
+    //    Constructor
 }
 
 void ParserCsv::getTable(QString path)
@@ -52,17 +52,19 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
     {
         QString line = in.readLine();
 
-        if (line.contains(";"))             // TODO mit ; getrennte Elemente trennen und in String[][] Schreiben ?!
+        if(line.contains(";;"))
+        {
+            qDebug() << "Fehler! Datei nicht kompatibel.";
+            file.close();
+            break;
+        }
+        else if(line.contains(";"))
         {
             QStringList columns(line.split(";", QString::SkipEmptyParts));
             lines.append(columns);
-
-//            qDebug() << "lines.count() = " << lines.count();
-//            qDebug() << "columns = " << columns;
-//            qDebug() << "columns[0] = " << columns[0];
-//            qDebug() << "columns.count() = " << columns.count();
         }
     }
+    file.close();
     return lines;
 }
 
