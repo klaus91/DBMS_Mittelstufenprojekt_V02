@@ -3,30 +3,22 @@
 
 #include <QMainWindow>
 #include <QDebug>
+//#include <QStandardItemModel>
+#include "mainwindow.h"
 
 
-class Datenverwaltung : public QMainWindow
+class Datenverwaltung
 {
-    Q_OBJECT
-public:
-    explicit Datenverwaltung(QWidget *parent = nullptr);
+    public:
+    Datenverwaltung();
 
-    void eintragErstellen();       // sind diese methoden nötig?
-    void eintragEntfernen();
-    void eintragSortieren();
-    void eintragEditieren();
-    void fehlerHandhabung();
+
 
 signals:
 
 public slots:
 
-    void tabelleAnlegen();
-    void tabelleLoeschen();
-    void zeileAnlegen();
-    void spalteAnlegen();
-    void zeileLoeschen();
-    void spalteLoeschen();
+
 
 
 protected:

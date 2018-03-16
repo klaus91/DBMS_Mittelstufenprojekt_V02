@@ -1,9 +1,10 @@
 #ifndef EXPORTDIALOG_H
 #define EXPORTDIALOG_H
 
+#include "parsercsv.h"
 #include <QDialog>
 #include <QDebug>
-#include "parsercsv.h"
+#include <QString>
 
 
 namespace Ui {
@@ -19,6 +20,8 @@ public:
 
     ~ExportDialog();
 
+    QString getValue();
+
 signals:
 
 public slots:
@@ -31,7 +34,9 @@ public slots:
 protected:
 
 private:
+
     Ui::ExportDialog *ui;
+    ParserCsv        *m_parserCsv = nullptr;
 };
 
 #endif // EXPORTDIALOG_H

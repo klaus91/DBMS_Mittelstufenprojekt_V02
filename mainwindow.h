@@ -9,6 +9,7 @@
 #include <QString>
 #include <QTreeView>
 #include <QItemSelectionModel>
+#include <QSignalMapper>
 #include "ui_mainwindow.h"
 #include "datenverwaltung.h"
 #include "exportdialog.h"
@@ -29,17 +30,34 @@ public:
     void showDirectory();
     void showTable(QString path);
 
+    QList<QStringList>  m_table;
+    ParserCsv           *m_parserCsv;
+
+   // QList<QStringList> getMemberTable(){return m_table;}
+
+
+//    ParserCsv getMemberParser(){return m_parserCsv;}
+
     ~MainWindow();
 
 public slots:
     void doubleclickEvent();
     void eintragSuchen();
+    void tabelleAnlegen();
+    void tabelleLoeschen();
+    void zeileAnlegen();
+    void spalteAnlegen();
+    void zeileLoeschen();
+    void spalteLoeschen();
+private slots:
+    void callExportDlg();
 
 private:
     Ui::MainWindow      *ui;
-    Datenverwaltung     *m_datenverwaltung;
+//    Datenverwaltung     *m_datenverwaltung;
     ExportDialog        *m_exportDialog;
     QFileSystemModel    *m_model;
+
 
 };
 

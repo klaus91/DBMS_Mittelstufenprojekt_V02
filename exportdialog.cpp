@@ -1,5 +1,6 @@
 #include "exportdialog.h"
 #include "ui_exportdialog.h"
+#include "mainwindow.h"
 
 ExportDialog::ExportDialog(QWidget *parent) :
     QDialog(parent),
@@ -20,7 +21,9 @@ ExportDialog::~ExportDialog()
 
 void ExportDialog::showExportDialog()
 {
-    this->show();
+//    m_parser = p;
+//    this->show();
+    this->exec();
     namePathChanged();
 }
 
@@ -50,9 +53,16 @@ void ExportDialog::okBtnClicked()
     QString path = ui->dateipfadLineEdit->text();
     QString name = ui->dateinameLineEdit->text();
     QString format = ui->formatComboBox->currentText();
-    ParserCsv *csvP = new ParserCsv();
-    csvP->saveTable(path, name, format);
+    //ParserCsv *csvP = new ParserCsv();
+
+//    m_parserCsv->saveTable(path, name, format, nullptr);
     ui->dateipfadLineEdit->setText("");
     ui->dateinameLineEdit->setText("");
+
     this->close();
+}
+
+QString ExportDialog::getValue()
+{
+    return "C:/Users/folkerts_k/test;FileNameTest;.csv";
 }

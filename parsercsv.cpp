@@ -11,16 +11,21 @@ ParserCsv::ParserCsv()
     //    Constructor
 }
 
-void ParserCsv::getTable(QString path)
+ParserCsv::~ParserCsv()
+{
+
+}
+
+void ParserCsv::loadTable(QString path)
 {
     qDebug() << "getTable() called";
     ParserCsv::openFile(path);
 }
 
-void ParserCsv::saveTable(QString path, QString name, QString format)
+void ParserCsv::saveTable(QString path, QString name, QString format, const QList<QStringList> table)
 {
     qDebug() << "saveTable called with: " << path + name + format;
-    writeFile(path, name, format);
+    createFile(path, name, format, table);
 }
 
 bool ParserCsv::openFile(QString path)
@@ -29,7 +34,7 @@ bool ParserCsv::openFile(QString path)
 
     if(file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Success: File opened!";
+        qDebug() << "Success: File opened!  " << m_table.length();
         m_table = readFile(file);
     }
     else
@@ -70,7 +75,7 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
     return lines;
 }
 
-bool ParserCsv::writeFile(QString path, QString name, QString format)
+bool ParserCsv::createFile(QString path, QString name, QString format, const QList<QStringList> table)
 {
     if (path != "")
     {
@@ -82,27 +87,54 @@ bool ParserCsv::writeFile(QString path, QString name, QString format)
         {
             dir.mkpath(path);
             qDebug() << "New directory created.";
+
             if (file.open(QIODevice::ReadWrite))
-                {
-                    qDebug()<<"New file created.";
-                }
+            {
+                qDebug()<<"New file created.";
+                writeFile(file, table);
+            }
         }
         else
         {
             if (file.open(QIODevice::ReadWrite))
-                {
-                    qDebug()<<"New file created.";
-                }
+            {
+                qDebug()<<"New file created.";
+                writeFile(file, table);
+            }
         }
-
-
         return true;
     }
     else
     {
-        qDebug() << "Error: incorrect filepath and/ or filename!";
+        qDebug() << "Error: incorrect filepath and/or filename!";
         return false;
     }
+}
+
+bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
+{
+    qDebug() << "writeFile called";
+    QTextStream out(&file);
+
+    if (file.isOpen())
+    {
+        qDebug() << "m_table.length() = " << table.length();
+        QList<QStringList> temp = getMemberTable();
+        //qDebug() << temp.length();
+
+        for(int i = 0; i < table.length(); ++i)
+        {
+            for (int innerCounter = 0; innerCounter < table.length(); ++innerCounter)
+            {
+                out << "Test;";
+//                out << table.length()[i][innerCounter] << ";";
+            }
+            out << "\n";
+        }
+
+        //        m_table
+    }
+    return true;
 }
 
 bool ParserCsv::closeFile()
