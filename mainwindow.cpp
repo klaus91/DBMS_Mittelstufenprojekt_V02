@@ -163,7 +163,6 @@ void MainWindow::showTable(QString path)
 /******************************************************************************
  * Methode zum aufrufen des NewTableDialog und zum erzeugen einer neuen
  * Tabelle im TableView mit den Eingaben aus dem NewTableDialog
- * HURENSOHN METHODE !!!!!!!!!!!!!!!
  ******************************************************************************/
 void MainWindow::tabelleAnlegen()
 {
@@ -177,11 +176,11 @@ void MainWindow::tabelleAnlegen()
         QString zeileString = rcCountSL[0];
         QString spalteString = rcCountSL[1];
         //qDebug() << zeileString + " und " + spalteString;
-        const int anzahlZeilen = zeileString.toInt();
-        const int anzahlSpalten = spalteString.toInt();
+        const int anzahlSpalten = zeileString.toInt();
+        const int anzahlZeilen = spalteString.toInt();
 
-        qDebug() << "Spaltenanzahl: " << anzahlSpalten;
-        qDebug() << "Zeilenanzahl: " << anzahlZeilen;
+        qDebug() << "Zeilen: " << anzahlSpalten;
+        qDebug() << "Spalten: " << anzahlZeilen;
 
         QList<QStringList> list;
         QString temp = "";
@@ -202,10 +201,10 @@ void MainWindow::tabelleAnlegen()
 
         //QStandardItem *header = new QStandardItem();
 
-        for(int i = 0; i < anzahlZeilen; ++i)
+        for(int i = 0; i < anzahlSpalten; ++i)
         {
-            m_model->setHorizontalHeaderItem(i, new QStandardItem(""));
-            //m_model->setHorizontalHeaderItem(i, header->setFlags ( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable));
+            m_model->setHorizontalHeaderItem(i, new QStandardItem(m_table[0][i]));
+//          m_model->setHorizontalHeaderItem(i, header->setFlags ( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable));
         }
 
         for (int outerCounter = 1; outerCounter < anzahlZeilen; ++outerCounter)

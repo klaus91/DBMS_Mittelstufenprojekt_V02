@@ -8,8 +8,8 @@ NewTableDialog::NewTableDialog(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->abbrechenButton, SIGNAL(clicked(bool)), this, SLOT(abbrechenBtnClicked()));
-    connect(ui->rowCountLineEdit, SIGNAL(textChanged(QString)), this, SLOT(rowColumnsChanged()));
-    connect(ui->columnCountLineEdit, SIGNAL(textChanged(QString)), this, SLOT(rowColumnsChanged()));
+    connect(ui->spaltenLineEdit, SIGNAL(textChanged(QString)), this, SLOT(rowColumnsChanged()));
+    connect(ui->zeilenLineEdit, SIGNAL(textChanged(QString)), this, SLOT(rowColumnsChanged()));
     connect(ui->okButton, SIGNAL(clicked(bool)), this, SLOT(okBtnClicked()));
 
 }
@@ -28,8 +28,8 @@ void NewTableDialog::showNewTableDialog()
     rowColumnsChanged();
     m_dialogCompleted = false;
     m_rowColumnsCount = "";
-    ui->rowCountLineEdit->setValidator(new QIntValidator(1, 10000, this));
-    ui->columnCountLineEdit->setValidator(new QIntValidator(1, 10000, this));
+    ui->spaltenLineEdit->setValidator(new QIntValidator(1, 10000, this));
+    ui->zeilenLineEdit->setValidator(new QIntValidator(1, 10000, this));
     this->exec();
 }
 
@@ -39,8 +39,8 @@ void NewTableDialog::showNewTableDialog()
  ******************************************************************************/
 void NewTableDialog::abbrechenBtnClicked()
 {
-    ui->rowCountLineEdit->setText("");
-    ui->columnCountLineEdit->setText("");
+    ui->zeilenLineEdit->setText("");
+    ui->spaltenLineEdit->setText("");
     m_dialogCompleted = false;
     this->close();
 }
@@ -51,7 +51,7 @@ void NewTableDialog::abbrechenBtnClicked()
  ******************************************************************************/
 void NewTableDialog::rowColumnsChanged()
 {
-    if (ui->columnCountLineEdit->text() != "" && ui->rowCountLineEdit->text() != "")
+    if (ui->spaltenLineEdit->text() != "" && ui->zeilenLineEdit->text() != "")
     {
         ui->okButton->setEnabled(true);
     }
@@ -67,10 +67,10 @@ void NewTableDialog::rowColumnsChanged()
  ******************************************************************************/
 void NewTableDialog::okBtnClicked()
 {
-    qDebug() << ui->rowCountLineEdit->text() << ";" << ui->columnCountLineEdit->text();
-    m_rowColumnsCount = ui->rowCountLineEdit->text() + ";" + ui->columnCountLineEdit->text();
-    ui->rowCountLineEdit->setText("");
-    ui->columnCountLineEdit->setText("");
+    qDebug() << ui->zeilenLineEdit->text() << ui->spaltenLineEdit->text();
+    m_rowColumnsCount = ui->zeilenLineEdit->text() + ";" + ui->spaltenLineEdit->text();
+    ui->zeilenLineEdit->setText("");
+    ui->spaltenLineEdit->setText("");
     m_dialogCompleted = true;
     this->close();
 }
