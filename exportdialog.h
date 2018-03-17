@@ -37,6 +37,7 @@ private:
 
     Ui::ExportDialog *ui;
     ParserCsv        *m_parserCsv = nullptr;
+    QString          m_pathAndFile;
 };
 
 #endif // EXPORTDIALOG_H

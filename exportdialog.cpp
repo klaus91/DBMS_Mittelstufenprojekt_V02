@@ -21,10 +21,8 @@ ExportDialog::~ExportDialog()
 
 void ExportDialog::showExportDialog()
 {
-//    m_parser = p;
-//    this->show();
-    this->exec();
     namePathChanged();
+    this->exec();
 }
 
 void ExportDialog::abbrechenBtnClicked()
@@ -53,9 +51,9 @@ void ExportDialog::okBtnClicked()
     QString path = ui->dateipfadLineEdit->text();
     QString name = ui->dateinameLineEdit->text();
     QString format = ui->formatComboBox->currentText();
-    //ParserCsv *csvP = new ParserCsv();
 
-//    m_parserCsv->saveTable(path, name, format, nullptr);
+    m_pathAndFile = path + ";" + name + ";" + format;
+
     ui->dateipfadLineEdit->setText("");
     ui->dateinameLineEdit->setText("");
 
@@ -64,5 +62,5 @@ void ExportDialog::okBtnClicked()
 
 QString ExportDialog::getValue()
 {
-    return "C:/Users/folkerts_k/test;FileNameTest;.csv";
+    return m_pathAndFile;
 }

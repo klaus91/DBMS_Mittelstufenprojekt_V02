@@ -28,6 +28,9 @@ void ParserCsv::saveTable(QString path, QString name, QString format, const QLis
     createFile(path, name, format, table);
 }
 
+/******************************************************************************
+ * Methode zum oeffnen eines Files mit dem Path aus loadTable
+ ******************************************************************************/
 bool ParserCsv::openFile(QString path)
 {
     QFile file(path);
@@ -47,6 +50,9 @@ bool ParserCsv::openFile(QString path)
     return true;
 }
 
+/******************************************************************************
+ * Methode zum einlesen eines .csv Files das mit openFile geöffnet wurde
+ ******************************************************************************/
 QList<QStringList> ParserCsv::readFile(QFile &file)
 {
     qDebug() << "leseDatei called";
@@ -75,6 +81,10 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
     return lines;
 }
 
+/******************************************************************************
+ * Methode zum erzeugen eines Files und gegebenenfalls Paths mit den angaben aus
+ * dem ExportDialog
+ ******************************************************************************/
 bool ParserCsv::createFile(QString path, QString name, QString format, const QList<QStringList> table)
 {
     if (path != "")
@@ -82,6 +92,11 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
         qDebug() << "writeFile called with: " << path + name + format;
         QDir dir;
         QFile file(path + name + format);
+
+//        if (file.exists())
+//        {
+//            qDebug() << "File already exists!";
+//        }
 
         if (!dir.exists(path))
         {
@@ -111,6 +126,10 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
     }
 }
 
+/******************************************************************************
+ * Methode zum beschreiben des in createFile erzeugten Files mit den daten aus
+ * m_table von MainWindow
+ ******************************************************************************/
 bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
 {
     qDebug() << "writeFile called";
@@ -118,26 +137,22 @@ bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
 
     if (file.isOpen())
     {
-        qDebug() << "m_table.length() = " << table.length();
-        QList<QStringList> temp = getMemberTable();
-        //qDebug() << temp.length();
+        qDebug() << "Length of table in writeFile is: " << table.length();
 
         for(int i = 0; i < table.length(); ++i)
         {
             for (int innerCounter = 0; innerCounter < table.length(); ++innerCounter)
             {
-                out << "Test;";
-//                out << table.length()[i][innerCounter] << ";";
+                out << table[i][innerCounter] << ";";
             }
             out << "\n";
         }
-
-        //        m_table
+        file.close();
     }
     return true;
 }
 
-bool ParserCsv::closeFile()
+bool ParserCsv::closeFile()         //noch nötig?
 {
     return true;
 }

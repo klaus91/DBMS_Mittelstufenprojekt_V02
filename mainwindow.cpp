@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //    m_datenverwaltung = new Datenverwaltung();
     m_exportDialog = new ExportDialog();
     m_parserCsv = new ParserCsv();
 
@@ -32,19 +31,31 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
+/******************************************************************************
+ * Funktion zum oeffnen des ExportDialogs zwecks exportieren eines Files mit
+ * Daten des tableView von MainWindow, aufgerufen durch Tabelle exportieren Btn
+ * und Aufruf des entsprechenden Parser, abhäbing vom gewählten Format
+ ******************************************************************************/
 void MainWindow::callExportDlg()
 {
     m_exportDialog->showExportDialog();
     //TODO Hier noch auf den Rückgabewert der exec() methode in showexportdialog überprüfung, bei abbruch muss auch hier abgebrochen werden
     if (true)
     {
-        qDebug() << m_exportDialog->getValue();
-        //TODO Hier die Rückgabewerte aus getvalue als parameter verwenden
-        m_parserCsv = new ParserCsv();
-        m_parserCsv->saveTable("C:/Users/folkerts_k/test/", "TestFilelala", ".csv", m_table);
-        delete m_parserCsv;
-        qDebug() << "Ich lebe noch";
+        qDebug() << "Path and Filename from ExportDialog: " << m_exportDialog->getValue();
+        QString pathAndName = m_exportDialog->getValue();
+        QStringList qslPathAndName = pathAndName.split(";");
+        qDebug() << qslPathAndName;
+
+        //TODO abfrage zur Unterscheidung der verschiedenen Parser
+
+        if (qslPathAndName[2] == ".csv")
+        {
+            m_parserCsv = new ParserCsv();
+            m_parserCsv->saveTable(qslPathAndName[0], qslPathAndName[1], qslPathAndName[2], m_table);
+            m_parserCsv->~ParserCsv();
+        }
+        //else if z.B. .xml
     }
 }
 
@@ -110,9 +121,6 @@ void MainWindow::showDirectory()
  ******************************************************************************/
 void MainWindow::showTable(QString path)
 {
-    //    ParserCsv *pCsv = new ParserCsv();
-    //QList<QStringList> myTable;
-
     if (!path.isEmpty())
     {
         if (path.contains(".csv"))
@@ -121,11 +129,10 @@ void MainWindow::showTable(QString path)
             m_parserCsv->loadTable(path);
             QList<QStringList> temp = m_parserCsv->getMemberTable();
             m_table = temp;
-            qDebug() << "Bla";
+            qDebug() << "Imported File is a .csv File!";
             m_parserCsv->~ParserCsv();
         }
 
-        //        myTable = dwv->ge
         int anzahlZeilen = m_table.count();
         int anzahlSpalten = m_table[0].count();
 
