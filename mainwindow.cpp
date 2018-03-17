@@ -32,7 +32,7 @@ MainWindow::~MainWindow()
 }
 
 /******************************************************************************
- * Funktion zum oeffnen des ExportDialogs zwecks exportieren eines Files mit
+ * Methode zum oeffnen des ExportDialogs zwecks exportieren eines Files mit
  * Daten des tableView von MainWindow, aufgerufen durch Tabelle exportieren Btn
  * und Aufruf des entsprechenden Parser, abhäbing vom gewählten Format
  ******************************************************************************/
@@ -60,7 +60,7 @@ void MainWindow::callExportDlg()
 }
 
 /******************************************************************************
- * Funktion um CSV-Dateien im TreeView per Doppelklick zu oeffnen und
+ * Methode um CSV-Dateien im TreeView per Doppelklick zu oeffnen und
  * anzuzeigen
  ******************************************************************************/
 void MainWindow::doubleclickEvent()
@@ -83,7 +83,7 @@ void MainWindow::doubleclickEvent()
 }
 
 /******************************************************************************
- * Funktion zum aktivieren des Suche Buttons sowie
+ * Methode zum aktivieren des Suche Buttons sowie
  * zum filtern des Treeviews (Filter -> QSortFilterProxy?!)
  ******************************************************************************/
 void MainWindow::eintragSuchen()
@@ -101,7 +101,7 @@ void MainWindow::eintragSuchen()
 }
 
 /******************************************************************************
- * Funktion zum Anzeigen des Verzeichnisbaums in Form eines TreeViews
+ * Methode zum Anzeigen des Verzeichnisbaums in Form eines TreeViews
  ******************************************************************************/
 void MainWindow::showDirectory()
 {
@@ -117,7 +117,7 @@ void MainWindow::showDirectory()
 }
 
 /******************************************************************************
- * Funktion zum Anzeigen des Inhalts einer Datei im TableView
+ * Methode zum Anzeigen des Inhalts einer Datei im TableView
  ******************************************************************************/
 void MainWindow::showTable(QString path)
 {

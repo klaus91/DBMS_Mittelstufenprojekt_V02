@@ -59,7 +59,10 @@ void ExportDialog::okBtnClicked()
 
     this->close();
 }
-
+/******************************************************************************
+ * Methode zur Rückgabe von m_pathAndFile der eine QString aus
+ * path; + name; + format enthält
+ ******************************************************************************/
 QString ExportDialog::getValue()
 {
     return m_pathAndFile;
