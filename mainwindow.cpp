@@ -9,7 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     m_exportDialog = new ExportDialog();
+    m_newTableDialog = new NewTableDialog();
     m_parserCsv = new ParserCsv();
+    //m_model = new QFileSystemModel;  //<- für den auskommentierten connect...
 
     connect(ui->sucheButton, SIGNAL(clicked()), this, SLOT(eintragSuchen()));
     connect(ui->neueTabelleButton, SIGNAL(clicked()), this, SLOT(tabelleAnlegen()));
@@ -22,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent()));
     connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(eintragSuchen()));
 
+
+    // CONNECT um value change in TableView zu registrieren und m_table mit diesen Werten zu updaten....
+    /*connect(m_model, SIGNAL(dataChanged(const QModelIndex,const QModelIndex)), this,
+            SLOT(updateTable(const QModelIndex&,const QModelIndex&)));*/
 
     MainWindow::eintragSuchen();
 }
@@ -46,8 +52,6 @@ void MainWindow::callExportDlg()
         QString pathAndName = m_exportDialog->getValue();
         QStringList qslPathAndName = pathAndName.split(";");
         qDebug() << qslPathAndName;
-
-        //TODO abfrage zur Unterscheidung der verschiedenen Parser
 
         if (qslPathAndName[2] == ".csv")
         {
@@ -156,9 +160,68 @@ void MainWindow::showTable(QString path)
     }
 }
 
+/******************************************************************************
+ * Methode zum aufrufen des NewTableDialog und zum erzeugen einer neuen
+ * Tabelle im TableView mit den Eingaben aus dem NewTableDialog
+ * HURENSOHN METHODE !!!!!!!!!!!!!!!
+ ******************************************************************************/
 void MainWindow::tabelleAnlegen()
 {
     qDebug() << "Tabelle anlegen clicked!";
+    m_newTableDialog->showNewTableDialog();
+    if (m_newTableDialog->m_dialogCompleted == true)
+    {
+        QString rcCount = m_newTableDialog->getValue();
+        QStringList rcCountSL = rcCount.split(";");
+        //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
+        QString zeileString = rcCountSL[0];
+        QString spalteString = rcCountSL[1];
+        //qDebug() << zeileString + " und " + spalteString;
+        const int anzahlZeilen = zeileString.toInt();
+        const int anzahlSpalten = spalteString.toInt();
+
+        qDebug() << "Spaltenanzahl: " << anzahlSpalten;
+        qDebug() << "Zeilenanzahl: " << anzahlZeilen;
+
+        QList<QStringList> list;
+        QString temp = "";
+        QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+
+        // macht aus m_table eine QList of QStringList aus leeren QStrings
+        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
+        {
+            QStringList sList;
+            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+            {
+                m_model->setItem(outerCounter - 1, innerCounter, new QStandardItem (""));
+                sList.append(temp);
+            }
+            list.append(sList);
+        }
+        m_table = list;
+
+        //QStandardItem *header = new QStandardItem();
+
+        for(int i = 0; i < anzahlZeilen; ++i)
+        {
+            m_model->setHorizontalHeaderItem(i, new QStandardItem(""));
+            //m_model->setHorizontalHeaderItem(i, header->setFlags ( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable));
+        }
+
+        for (int outerCounter = 1; outerCounter < anzahlZeilen; ++outerCounter)
+        {
+            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+            {
+                m_model->setItem(outerCounter - 1, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
+            }
+        }
+        ui->myTableView->setModel(m_model);
+        ui->myTableView->update();
+    }
+    else
+    {
+        return;
+    }
 }
 
 void MainWindow::tabelleLoeschen()
@@ -192,3 +255,12 @@ void MainWindow::spalteLoeschen()
 {
     qDebug() << "Spalte loeschen clicked!";
 }
+
+/******************************************************************************
+ * Methode um bei manueller Änderung der Werte in myTableView,
+ * m_table mit diesen Werten upzudaten
+ ******************************************************************************/
+//void MainWindow::updateTable(const QModelIndex& topLeft, const QModelIndex& bottomRight)
+//{
+//    qDebug() << "updateTable called!!";
+//}

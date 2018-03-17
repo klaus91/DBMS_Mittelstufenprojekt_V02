@@ -30,7 +30,8 @@ SOURCES += \
     parser.cpp \
     parsercsv.cpp \
     exportdialog.cpp \
-    parserxml.cpp
+    parserxml.cpp \
+    newtabledialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,9 +39,11 @@ HEADERS += \
     parser.h \
     parsercsv.h \
     exportdialog.h \
-    parserxml.h
+    parserxml.h \
+    newtabledialog.h
 
 FORMS += \
         mainwindow.ui \
     mainwindow.ui \
-    exportdialog.ui
+    exportdialog.ui \
+    newtabledialog.ui

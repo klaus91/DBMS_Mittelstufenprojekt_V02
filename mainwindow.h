@@ -15,6 +15,7 @@
 #include "exportdialog.h"
 #include "parser.h"
 #include "parsercsv.h"
+#include "newtabledialog.h"
 
 
 namespace Ui {
@@ -49,6 +50,8 @@ public slots:
     void spalteAnlegen();
     void zeileLoeschen();
     void spalteLoeschen();
+    //void updateTable(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+
 private slots:
     void callExportDlg();
 
@@ -56,6 +59,7 @@ private:
     Ui::MainWindow      *ui;
 //    Datenverwaltung     *m_datenverwaltung;
     ExportDialog        *m_exportDialog;
+    NewTableDialog      *m_newTableDialog;
     QFileSystemModel    *m_model;
 
 

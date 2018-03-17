@@ -36,8 +36,8 @@ void ExportDialog::abbrechenBtnClicked()
 {
     ui->dateipfadLineEdit->setText("");
     ui->dateinameLineEdit->setText("");
-    this->close();
     m_dialogCompleted = false;
+    this->close();
 }
 
 /******************************************************************************
@@ -57,7 +57,7 @@ void ExportDialog::namePathChanged()
 }
 
 /******************************************************************************
- * Methode die aufgerufen wird wenn der Ok Btn im Exportdlg geklickt wird.
+ * Methode die aufgerufen wird wenn der Ok Btn im ExportDialog geklickt wird
  * und m_pathAndFile einen zusammengesetzen QString aus den lineedits zuweisst
  ******************************************************************************/
 void ExportDialog::okBtnClicked()

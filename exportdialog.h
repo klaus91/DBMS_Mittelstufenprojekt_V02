@@ -17,11 +17,12 @@ class ExportDialog : public QDialog
 
 public:
     explicit ExportDialog(QWidget *parent = 0);
+    QString getValue();
+
+    bool    m_dialogCompleted = false;
 
     ~ExportDialog();
 
-    QString getValue();
-    bool    m_dialogCompleted = false;
 
 signals:
 
