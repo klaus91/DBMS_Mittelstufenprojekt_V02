@@ -30,6 +30,7 @@ void ExportDialog::abbrechenBtnClicked()
     ui->dateipfadLineEdit->setText("");
     ui->dateinameLineEdit->setText("");
     this->close();
+    m_dialogCompleted = false;
 }
 
 void ExportDialog::namePathChanged()
@@ -56,7 +57,7 @@ void ExportDialog::okBtnClicked()
 
     ui->dateipfadLineEdit->setText("");
     ui->dateinameLineEdit->setText("");
-
+    m_dialogCompleted = true;
     this->close();
 }
 /******************************************************************************

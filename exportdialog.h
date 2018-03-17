@@ -21,6 +21,7 @@ public:
     ~ExportDialog();
 
     QString getValue();
+    bool    m_dialogCompleted = false;
 
 signals:
 

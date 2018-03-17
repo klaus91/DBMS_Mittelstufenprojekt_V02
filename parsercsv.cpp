@@ -82,7 +82,7 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
 }
 
 /******************************************************************************
- * Methode zum erzeugen eines Files und gegebenenfalls Paths mit den angaben aus
+ * Methode zum erzeugen (oder überschreiben) eines Files und gegebenenfalls Paths mit den angaben aus
  * dem ExportDialog
  ******************************************************************************/
 bool ParserCsv::createFile(QString path, QString name, QString format, const QList<QStringList> table)
@@ -92,11 +92,6 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
         qDebug() << "writeFile called with: " << path + name + format;
         QDir dir;
         QFile file(path + name + format);
-
-//        if (file.exists())
-//        {
-//            qDebug() << "File already exists!";
-//        }
 
         if (!dir.exists(path))
         {
@@ -111,9 +106,16 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
         }
         else
         {
-            if (file.open(QIODevice::ReadWrite))
+            if (!file.exists())
             {
+                file.open(QIODevice::ReadWrite);
                 qDebug()<<"New file created.";
+                writeFile(file, table);
+            }
+            else
+            {
+                file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+                qDebug()<<"Existing file overwritten.";
                 writeFile(file, table);
             }
         }

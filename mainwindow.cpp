@@ -39,8 +39,8 @@ MainWindow::~MainWindow()
 void MainWindow::callExportDlg()
 {
     m_exportDialog->showExportDialog();
-    //TODO Hier noch auf den Rückgabewert der exec() methode in showexportdialog überprüfung, bei abbruch muss auch hier abgebrochen werden
-    if (true)
+
+    if (m_exportDialog->m_dialogCompleted == true)
     {
         qDebug() << "Path and Filename from ExportDialog: " << m_exportDialog->getValue();
         QString pathAndName = m_exportDialog->getValue();
@@ -55,7 +55,11 @@ void MainWindow::callExportDlg()
             m_parserCsv->saveTable(qslPathAndName[0], qslPathAndName[1], qslPathAndName[2], m_table);
             m_parserCsv->~ParserCsv();
         }
-        //else if z.B. .xml
+        //else if (z.B. .xml)
+    }
+    else
+    {
+        return;
     }
 }
 
@@ -73,12 +77,10 @@ void MainWindow::doubleclickEvent()
         info = m_model->fileInfo(index);
         path = info.absoluteFilePath();
         qDebug() << path;
-    }
-
-    if (path.contains(".csv"))
-    {
-        m_parserCsv->loadTable(path);
-        showTable(path);
+        if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
+        {
+            showTable(path);
+        }
     }
 }
 
