@@ -1,12 +1,13 @@
-#ifndef PARSERCSV_H
-#define PARSERCSV_H
+#ifndef PARSERXML_H
+#define PARSERXML_H
 
 #include "parser.h"
 
-class ParserCsv : public Parser
+
+class ParserXml : public Parser
 {
 public:
-    ParserCsv();
+    ParserXml();
 
     QList<QStringList> m_table;
     QList<QStringList> getMemberTable(){return m_table;}
@@ -14,7 +15,7 @@ public:
     virtual void loadTable(QString path);
     virtual void saveTable(QString path, QString name, QString format, const QList<QStringList> table);
 
-    ~ParserCsv();
+    ~ParserXml();
 
 private:
 
@@ -26,4 +27,4 @@ private:
 
 };
 
-#endif // PARSERCSV_H
+#endif // PARSERXML_H

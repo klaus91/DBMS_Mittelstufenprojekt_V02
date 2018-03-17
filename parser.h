@@ -6,6 +6,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QDebug>
+#include <Qdir>
 
 
 class Parser

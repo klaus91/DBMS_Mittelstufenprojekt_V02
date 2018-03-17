@@ -1,25 +1,20 @@
 #include "ParserCsv.h"
 
-#include <QFile>
-#include <QString>
-#include <QTextStream>
-#include <QDebug>
-#include <Qdir>
 
 ParserCsv::ParserCsv()
 {
-    //    Constructor
+    //Constructor
 }
 
 ParserCsv::~ParserCsv()
 {
-
+    //Destructor
 }
 
 void ParserCsv::loadTable(QString path)
 {
     qDebug() << "getTable() called";
-    ParserCsv::openFile(path);
+    openFile(path);
 }
 
 void ParserCsv::saveTable(QString path, QString name, QString format, const QList<QStringList> table)
@@ -89,7 +84,7 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
 {
     if (path != "")
     {
-        qDebug() << "writeFile called with: " << path + name + format;
+        qDebug() << "createFile called with: " << path + name + format;
         QDir dir;
         QFile file(path + name + format);
 
@@ -134,16 +129,17 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
  ******************************************************************************/
 bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
 {
-    qDebug() << "writeFile called";
+    qDebug() << "writeFile called.";
     QTextStream out(&file);
 
     if (file.isOpen())
     {
-        qDebug() << "Length of table in writeFile is: " << table.length();
+        qDebug() << "Number of columns in table is: " << table.length();
+        qDebug() << "Number of rows in table is: " << table[0].length();
 
         for(int i = 0; i < table.length(); ++i)
         {
-            for (int innerCounter = 0; innerCounter < table.length(); ++innerCounter)
+            for (int innerCounter = 0; innerCounter < table[i].length(); ++innerCounter)
             {
                 out << table[i][innerCounter] << ";";
             }

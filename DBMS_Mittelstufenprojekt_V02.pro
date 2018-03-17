@@ -29,14 +29,16 @@ SOURCES += \
     datenverwaltung.cpp \
     parser.cpp \
     parsercsv.cpp \
-    exportdialog.cpp
+    exportdialog.cpp \
+    parserxml.cpp
 
 HEADERS += \
         mainwindow.h \
     datenverwaltung.h \
     parser.h \
     parsercsv.h \
-    exportdialog.h
+    exportdialog.h \
+    parserxml.h
 
 FORMS += \
         mainwindow.ui \

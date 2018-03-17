@@ -19,12 +19,19 @@ ExportDialog::~ExportDialog()
     delete ui;
 }
 
+/******************************************************************************
+ * Methode die von MainWindow aufgerufen wird und den ExportDialog anzeigt.
+ ******************************************************************************/
 void ExportDialog::showExportDialog()
 {
     namePathChanged();
     this->exec();
 }
 
+/******************************************************************************
+ * Methode die aufgerufen wird wenn im Exportdlg Abbrechen geklickt wird und
+ * den Dialog schließt.
+ ******************************************************************************/
 void ExportDialog::abbrechenBtnClicked()
 {
     ui->dateipfadLineEdit->setText("");
@@ -33,6 +40,10 @@ void ExportDialog::abbrechenBtnClicked()
     m_dialogCompleted = false;
 }
 
+/******************************************************************************
+ * Methode die aufgerufen wird wenn der sich der Content in den Lineedits des
+ * Exportdlg ändert und bei leeren feldern den Ok Btn deaktiviert.
+ ******************************************************************************/
 void ExportDialog::namePathChanged()
 {
     if (ui->dateinameLineEdit->text() != "" && ui->dateipfadLineEdit->text() != "")
@@ -45,6 +56,10 @@ void ExportDialog::namePathChanged()
     }
 }
 
+/******************************************************************************
+ * Methode die aufgerufen wird wenn der Ok Btn im Exportdlg geklickt wird.
+ * und m_pathAndFile einen zusammengesetzen QString aus den lineedits zuweisst
+ ******************************************************************************/
 void ExportDialog::okBtnClicked()
 {
     qDebug() << "Ok button clicked!";
