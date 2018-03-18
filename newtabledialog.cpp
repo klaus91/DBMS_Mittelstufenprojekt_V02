@@ -46,7 +46,7 @@ void NewTableDialog::abbrechenBtnClicked()
 }
 
 /******************************************************************************
- * Methode die aufgerufen wird wenn der sich der Content in den Lineedits des
+ * Methode die aufgerufen wird, wenn sich der Content in den Lineedits des
  * NewTableDialog ändert und bei leeren Feldern (und < 1) den Ok Btn deaktiviert.
  ******************************************************************************/
 void NewTableDialog::rowColumnsChanged()

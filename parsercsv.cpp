@@ -3,12 +3,16 @@
 
 ParserCsv::ParserCsv()
 {
-    //Constructor
+//    Constructor
+    qDebug() << "ParserCsv() instanziiert...";
+//    Constructor
+//    Constructor
 }
 
 ParserCsv::~ParserCsv()
 {
-    //Destructor
+    qDebug() << "ParserCsv() zerstoert...";
+//    Destructor
 }
 
 void ParserCsv::loadTable(QString path)
@@ -145,6 +149,11 @@ bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
             }
             out << "\n";
         }
+
+//        m_table
+
+//        m_table
+
         file.close();
     }
     return true;

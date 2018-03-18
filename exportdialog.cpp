@@ -17,6 +17,7 @@ ExportDialog::ExportDialog(QWidget *parent) :
 ExportDialog::~ExportDialog()
 {
     delete ui;
+    qDebug() << "ExportDialog zerstoert...";
 }
 
 /******************************************************************************

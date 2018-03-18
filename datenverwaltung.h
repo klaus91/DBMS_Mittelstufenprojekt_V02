@@ -9,17 +9,12 @@
 
 class Datenverwaltung
 {
-    public:
+public:
     Datenverwaltung();
-
-
 
 signals:
 
 public slots:
-
-
-
 
 protected:
 

@@ -5,6 +5,7 @@
 #include <QDirModel>
 #include <QFileSystemModel>
 #include <QMainWindow>
+#include <QAbstractItemModel>
 #include <QStandardItemModel>
 #include <QString>
 #include <QTreeView>
@@ -34,7 +35,7 @@ public:
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;
 
-   // QList<QStringList> getMemberTable(){return m_table;}
+//    QList<QStringList> getMemberTable(){return m_table;}
 
 
 //    ParserCsv getMemberParser(){return m_parserCsv;}
@@ -61,7 +62,12 @@ private:
 //    Datenverwaltung     *m_datenverwaltung;
     ExportDialog        *m_exportDialog;
     NewTableDialog      *m_newTableDialog;
-    QFileSystemModel    *m_model;
+    QFileSystemModel    *m_FSystemModel;
+    QStandardItemModel  *m_StdItemModel;
+
+    int                 m_anzahlZeilen;
+    int                 m_anzahlSpalten;
+
 
 
 };

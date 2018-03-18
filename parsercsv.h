@@ -9,6 +9,7 @@ public:
     ParserCsv();
 
     QList<QStringList> m_table;
+
     QList<QStringList> getMemberTable(){return m_table;}
 
     virtual void loadTable(QString path);

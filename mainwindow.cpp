@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    qDebug() << "MainWindow instanziiert...";
     ui->setupUi(this);
 
     m_exportDialog = new ExportDialog();
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    qDebug() << "MainWindow zerstoert...";
 }
 
 /******************************************************************************
@@ -78,13 +80,17 @@ void MainWindow::doubleclickEvent()
     QFileInfo info = QFileInfo();
     if (index.isValid())
     {
-        info = m_model->fileInfo(index);
+        info = m_FSystemModel->fileInfo(index);
         path = info.absoluteFilePath();
         qDebug() << path;
         if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
         {
             getParser(path);
         }
+    }
+    else
+    {
+        return;
     }
 }
 
@@ -133,6 +139,7 @@ void MainWindow::getParser(QString path)
             QList<QStringList> temp = m_parserCsv->getMemberTable();
             m_table = temp;
             qDebug() << "Imported File is a .csv File!";
+//            m_path = path;
             m_parserCsv->~ParserCsv();
         }
     }
@@ -157,21 +164,24 @@ void MainWindow::showTable()
         int anzahlZeilen = m_table.count();
         int anzahlSpalten = m_table[0].count();
 
-        QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen, anzahlSpalten, this);
+        m_anzahlZeilen = anzahlZeilen;
+        m_anzahlSpalten = anzahlSpalten;
+
+        m_StdItemModel = new QStandardItemModel(anzahlZeilen, anzahlSpalten, this);
 
         for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
         {
             for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
             {
-                m_model->setItem(outerCounter, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
+                m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
             }
         }
-        ui->myTableView->setModel(m_model);
+        ui->myTableView->setModel(m_StdItemModel);
     }
 }
 
 /******************************************************************************
- * Methode zum aufrufen des NewTableDialog und zum erzeugen einer neuen
+ * Methode zum Aufrufen des NewTableDialog und zum Erzeugen einer neuen
  * Tabelle im TableView mit den Eingaben aus dem NewTableDialog
  ******************************************************************************/
 void MainWindow::tabelleAnlegen()
@@ -186,15 +196,19 @@ void MainWindow::tabelleAnlegen()
         QString zeileString = rcCountSL[0];
         QString spalteString = rcCountSL[1];
         //qDebug() << zeileString + " und " + spalteString;
-        const int anzahlSpalten = zeileString.toInt();
-        const int anzahlZeilen = spalteString.toInt();
 
-        qDebug() << "Zeilen: " << anzahlSpalten;
-        qDebug() << "Spalten: " << anzahlZeilen;
+        const int anzahlSpalten = spalteString.toInt();
+        const int anzahlZeilen = zeileString.toInt();
+
+        qDebug() << "Zeilen: " << anzahlZeilen;
+        qDebug() << "Spalten: " << anzahlSpalten;
 
         QList<QStringList> list;
         QString temp = "";
         QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+//        Wäre es nicht sinnvoller auch an dieser Stelle den Klassenmember m_StdItemModel zu verwenden anstatt eine neue Variable bzw Pointer QStandardItemModel zu deklarieren?
+//        Sprich: m_StdItemModel = new QStandardItemModel()
+//        So kann nämlich gleichzeitig immer nur eine Tabelle instanziiert werden...
 
         // macht aus m_table eine QList of QStringList aus leeren QStrings
         for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
@@ -210,6 +224,9 @@ void MainWindow::tabelleAnlegen()
         m_table = list;
 
         showTable();
+
+        m_anzahlZeilen = anzahlZeilen;
+        m_anzahlSpalten = anzahlSpalten;
     }
     else
     {
@@ -226,17 +243,28 @@ void MainWindow::zeileAnlegen()
 {
     qDebug() << "Zeile anlegen clicked!";
 
-    //   int anzahlZeilen;
+    QStringList newLine;
 
-    //  anzahlZeilen = MainWindow::m_model->rowCount()
-    //    MainWindow::m_model->
+    for (int i = 0; i < m_anzahlSpalten; ++i)
+    {
+        newLine.append("");
+    }
 
-    //  qDebug()
+    m_table.append(newLine);
+
+    showTable();
 }
 
 void MainWindow::spalteAnlegen()
 {
     qDebug() << "Spalte anlegen clicked!";
+
+    for (int i = 0; i < m_anzahlZeilen; ++i)
+    {
+        m_table[i].append("");
+    }
+
+    showTable();
 }
 
 void MainWindow::zeileLoeschen()
