@@ -139,7 +139,7 @@ void MainWindow::getParser(QString path)
             QList<QStringList> temp = m_parserCsv->getMemberTable();
             m_table = temp;
             qDebug() << "Imported File is a .csv File!";
-//            m_path = path;
+            //            m_path = path;
             m_parserCsv->~ParserCsv();
         }
     }
@@ -206,9 +206,9 @@ void MainWindow::tabelleAnlegen()
         QList<QStringList> list;
         QString temp = "";
         QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
-//        Wäre es nicht sinnvoller auch an dieser Stelle den Klassenmember m_StdItemModel zu verwenden anstatt eine neue Variable bzw Pointer QStandardItemModel zu deklarieren?
-//        Sprich: m_StdItemModel = new QStandardItemModel()
-//        So kann nämlich gleichzeitig immer nur eine Tabelle instanziiert werden...
+        //        Wäre es nicht sinnvoller auch an dieser Stelle den Klassenmember m_StdItemModel zu verwenden anstatt eine neue Variable bzw Pointer QStandardItemModel zu deklarieren?
+        //        Sprich: m_StdItemModel = new QStandardItemModel()
+        //        So kann nämlich gleichzeitig immer nur eine Tabelle instanziiert werden...
 
         // macht aus m_table eine QList of QStringList aus leeren QStrings
         for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
@@ -242,39 +242,77 @@ void MainWindow::tabelleLoeschen()
 void MainWindow::zeileAnlegen()
 {
     qDebug() << "Zeile anlegen clicked!";
+    qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
 
     QStringList newLine;
 
-    for (int i = 0; i < m_anzahlSpalten; ++i)
+    if (m_anzahlZeilen != 0 || m_anzahlSpalten != 0)
     {
-        newLine.append("");
+        for (int i = 0; i < m_anzahlSpalten; ++i)
+        {
+            newLine.append("");
+        }
+        m_table.append(newLine);
+        showTable();
+        qDebug() << "m_anzahlZeilen after method = " << m_anzahlZeilen;
     }
-
-    m_table.append(newLine);
-
-    showTable();
+    else
+    {
+        qDebug() << "Fehler! Keine Tabelle angelegt.";
+    }
 }
 
 void MainWindow::spalteAnlegen()
 {
     qDebug() << "Spalte anlegen clicked!";
 
-    for (int i = 0; i < m_anzahlZeilen; ++i)
+    if(m_anzahlZeilen != 0 || m_anzahlSpalten != 0)
     {
-        m_table[i].append("");
+        for (int i = 0; i < m_anzahlZeilen; ++i)
+        {
+            m_table[i].append("");
+        }
+        showTable();
     }
-
-    showTable();
+    else
+    {
+        qDebug() << "Fehler! Keine Tabelle angelegt.";
+    }
 }
 
 void MainWindow::zeileLoeschen()
 {
     qDebug() << "Zeile loeschen clicked!";
+    qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
+
+    if(m_anzahlZeilen > 1)
+    {
+        m_table.removeLast();
+        showTable();
+        qDebug() << "m_anzahlZeilen after method = " << m_anzahlZeilen;
+    }
+    else
+    {
+        qDebug() << "Fehler! Es muss mindestens eine Zeile vorhanden sein.";
+    }
 }
 
 void MainWindow::spalteLoeschen()
 {
     qDebug() << "Spalte loeschen clicked!";
+
+    if(m_anzahlSpalten > 1)
+    {
+        for(int i = 0; i < m_table.length(); ++i)
+        {
+            m_table[i].removeLast();
+            showTable();
+        }
+    }
+    else
+    {
+        qDebug() << "Fehler! Es muss mindestens eine Spalte vorhanden sein.";
+    }
 }
 
 /******************************************************************************

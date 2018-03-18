@@ -65,8 +65,8 @@ private:
     QFileSystemModel    *m_FSystemModel;
     QStandardItemModel  *m_StdItemModel;
 
-    int                 m_anzahlZeilen;
-    int                 m_anzahlSpalten;
+    int                 m_anzahlZeilen = 0;
+    int                 m_anzahlSpalten = 0;
 
 
 
