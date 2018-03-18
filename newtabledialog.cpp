@@ -11,7 +11,6 @@ NewTableDialog::NewTableDialog(QWidget *parent) :
     connect(ui->spaltenLineEdit, SIGNAL(textChanged(QString)), this, SLOT(rowColumnsChanged()));
     connect(ui->zeilenLineEdit, SIGNAL(textChanged(QString)), this, SLOT(rowColumnsChanged()));
     connect(ui->okButton, SIGNAL(clicked(bool)), this, SLOT(okBtnClicked()));
-
 }
 
 NewTableDialog::~NewTableDialog()

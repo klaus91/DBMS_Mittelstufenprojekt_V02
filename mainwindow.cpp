@@ -142,18 +142,13 @@ void MainWindow::showTable(QString path)
         int anzahlZeilen = m_table.count();
         int anzahlSpalten = m_table[0].count();
 
-        QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+        QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen, anzahlSpalten, this);
 
-        for(int i = 0; i < anzahlSpalten; ++i)
-        {
-            m_model->setHorizontalHeaderItem(i, new QStandardItem(m_table[0][i]));
-        }
-
-        for (int outerCounter = 1; outerCounter < anzahlZeilen; ++outerCounter)
+        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
         {
             for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
             {
-                m_model->setItem(outerCounter - 1, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
+                m_model->setItem(outerCounter, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
             }
         }
         ui->myTableView->setModel(m_model);
@@ -192,26 +187,19 @@ void MainWindow::tabelleAnlegen()
             QStringList sList;
             for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
             {
-                m_model->setItem(outerCounter - 1, innerCounter, new QStandardItem (""));
+                m_model->setItem(outerCounter, innerCounter, new QStandardItem (""));
                 sList.append(temp);
             }
             list.append(sList);
         }
         m_table = list;
 
-        //QStandardItem *header = new QStandardItem();
-
-        for(int i = 0; i < anzahlSpalten; ++i)
-        {
-            m_model->setHorizontalHeaderItem(i, new QStandardItem(m_table[0][i]));
-//          m_model->setHorizontalHeaderItem(i, header->setFlags ( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable));
-        }
-
-        for (int outerCounter = 1; outerCounter < anzahlZeilen; ++outerCounter)
+        // Füllt myTableView mit leeren Spalten/ Zeilen
+        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
         {
             for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
             {
-                m_model->setItem(outerCounter - 1, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
+                m_model->setItem(outerCounter, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
             }
         }
         ui->myTableView->setModel(m_model);
