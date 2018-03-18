@@ -27,8 +27,9 @@ void NewTableDialog::showNewTableDialog()
     rowColumnsChanged();
     m_dialogCompleted = false;
     m_rowColumnsCount = "";
-    ui->spaltenLineEdit->setValidator(new QIntValidator(1, 10000, this));
-    ui->zeilenLineEdit->setValidator(new QIntValidator(1, 10000, this));
+    QValidator *validator = new QIntValidator(1, 10000, this);
+    ui->spaltenLineEdit->setValidator(validator);
+    ui->zeilenLineEdit->setValidator(validator);
     this->exec();
 }
 
@@ -46,11 +47,12 @@ void NewTableDialog::abbrechenBtnClicked()
 
 /******************************************************************************
  * Methode die aufgerufen wird wenn der sich der Content in den Lineedits des
- * NewTableDialog ändert und bei leeren feldern den Ok Btn deaktiviert.
+ * NewTableDialog ändert und bei leeren Feldern (und < 1) den Ok Btn deaktiviert.
  ******************************************************************************/
 void NewTableDialog::rowColumnsChanged()
 {
-    if (ui->spaltenLineEdit->text() != "" && ui->zeilenLineEdit->text() != "")
+    if (ui->spaltenLineEdit->text() != "" && ui->zeilenLineEdit->text() != "" &&
+            ui->spaltenLineEdit->text().toInt() >= 1 && ui->zeilenLineEdit->text().toInt() >= 1)
     {
         ui->okButton->setEnabled(true);
     }
