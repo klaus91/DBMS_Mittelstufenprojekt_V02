@@ -83,7 +83,7 @@ void MainWindow::doubleclickEvent()
         qDebug() << path;
         if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
         {
-            showTable(path);
+            getParser(path);
         }
     }
 }
@@ -122,10 +122,7 @@ void MainWindow::showDirectory()
     ui->myTreeView->setModel(m_model);
 }
 
-/******************************************************************************
- * Methode zum Anzeigen des Inhalts einer Datei im TableView
- ******************************************************************************/
-void MainWindow::showTable(QString path)
+void MainWindow::getParser(QString path)
 {
     if (!path.isEmpty())
     {
@@ -138,7 +135,25 @@ void MainWindow::showTable(QString path)
             qDebug() << "Imported File is a .csv File!";
             m_parserCsv->~ParserCsv();
         }
+    }
+    else
+    {
+        return;
+    }
+    showTable();
+}
 
+/******************************************************************************
+ * Methode zum Anzeigen des Inhalts einer Datei im TableView
+ ******************************************************************************/
+void MainWindow::showTable()
+{
+    if (m_table[0].length() == 0)
+    {
+        return;
+    }
+    else
+    {
         int anzahlZeilen = m_table.count();
         int anzahlSpalten = m_table[0].count();
 
@@ -194,16 +209,7 @@ void MainWindow::tabelleAnlegen()
         }
         m_table = list;
 
-        // Füllt myTableView mit leeren Spalten/ Zeilen
-        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
-        {
-            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
-            {
-                m_model->setItem(outerCounter, innerCounter, new QStandardItem (m_table[outerCounter][innerCounter]));
-            }
-        }
-        ui->myTableView->setModel(m_model);
-        ui->myTableView->update();
+        showTable();
     }
     else
     {

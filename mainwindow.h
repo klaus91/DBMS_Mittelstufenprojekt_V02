@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void showDirectory();
-    void showTable(QString path);
+    void showTable();
 
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;
@@ -50,6 +50,7 @@ public slots:
     void spalteAnlegen();
     void zeileLoeschen();
     void spalteLoeschen();
+    void getParser(QString path);
     //void updateTable(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 
 private slots:

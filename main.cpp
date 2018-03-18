@@ -7,7 +7,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     w.showDirectory();
-    w.showTable("");
+    w.getParser("");
+    //w.showTable();
 
     return a.exec();
 }
