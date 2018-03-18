@@ -31,6 +31,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void showDirectory();
     void showTable();
+    void updateTable();
+    void disableExportBtn();
 
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;
@@ -52,24 +54,20 @@ public slots:
     void zeileLoeschen();
     void spalteLoeschen();
     void getParser(QString path);
-    //void updateTable(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+//    void updateTable(const QModelIndex&, const QModelIndex&);
 
 private slots:
     void callExportDlg();
 
 private:
     Ui::MainWindow      *ui;
-//    Datenverwaltung     *m_datenverwaltung;
     ExportDialog        *m_exportDialog;
     NewTableDialog      *m_newTableDialog;
     QFileSystemModel    *m_FSystemModel;
     QStandardItemModel  *m_StdItemModel;
 
-    int                 m_anzahlZeilen = 0;
-    int                 m_anzahlSpalten = 0;
-
-
-
+    int                 m_anzahlZeilen;
+    int                 m_anzahlSpalten;
 };
 
 #endif // MAINWINDOW_H

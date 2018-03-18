@@ -52,7 +52,7 @@ void NewTableDialog::abbrechenBtnClicked()
 void NewTableDialog::rowColumnsChanged()
 {
     if (ui->spaltenLineEdit->text() != "" && ui->zeilenLineEdit->text() != "" &&
-            ui->spaltenLineEdit->text().toInt() >= 1 && ui->zeilenLineEdit->text().toInt() >= 1)
+        ui->spaltenLineEdit->text().toInt() >= 1 && ui->zeilenLineEdit->text().toInt() >= 1)
     {
         ui->okButton->setEnabled(true);
     }

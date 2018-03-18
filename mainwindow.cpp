@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_exportDialog = new ExportDialog();
     m_newTableDialog = new NewTableDialog();
     m_parserCsv = new ParserCsv();
-    //m_model = new QFileSystemModel;  //<- für den auskommentierten connect...
+    //    m_StdItemModel = new QStandardItemModel(0, 0, this);  //<- für den auskommentierten connect...
+    //    ui->myTableView->setModel(m_StdItemModel);
 
     connect(ui->sucheButton, SIGNAL(clicked()), this, SLOT(eintragSuchen()));
     connect(ui->neueTabelleButton, SIGNAL(clicked()), this, SLOT(tabelleAnlegen()));
@@ -26,9 +27,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(eintragSuchen()));
 
 
-    // CONNECT um value change in TableView zu registrieren und m_table mit diesen Werten zu updaten....
-    /*connect(m_model, SIGNAL(dataChanged(const QModelIndex,const QModelIndex)), this,
-            SLOT(updateTable(const QModelIndex&,const QModelIndex&)));*/
+    //    CONNECT um value change in TableView zu registrieren und m_table mit diesen Werten zu updaten....
+    //    connect(ui->myTableView->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this,
+    //                SLOT(updateTable(const QModelIndex&, const QModelIndex&)));
+
 
     MainWindow::eintragSuchen();
 }
@@ -48,8 +50,11 @@ void MainWindow::callExportDlg()
 {
     m_exportDialog->showExportDialog();
 
+
+
     if (m_exportDialog->m_dialogCompleted == true)
     {
+        updateTable();
         qDebug() << "Path and Filename from ExportDialog: " << m_exportDialog->getValue();
         QString pathAndName = m_exportDialog->getValue();
         QStringList qslPathAndName = pathAndName.split(";");
@@ -139,7 +144,6 @@ void MainWindow::getParser(QString path)
             QList<QStringList> temp = m_parserCsv->getMemberTable();
             m_table = temp;
             qDebug() << "Imported File is a .csv File!";
-            //            m_path = path;
             m_parserCsv->~ParserCsv();
         }
     }
@@ -205,10 +209,7 @@ void MainWindow::tabelleAnlegen()
 
         QList<QStringList> list;
         QString temp = "";
-        QStandardItemModel *m_model = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
-        //        Wäre es nicht sinnvoller auch an dieser Stelle den Klassenmember m_StdItemModel zu verwenden anstatt eine neue Variable bzw Pointer QStandardItemModel zu deklarieren?
-        //        Sprich: m_StdItemModel = new QStandardItemModel()
-        //        So kann nämlich gleichzeitig immer nur eine Tabelle instanziiert werden...
+        m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
 
         // macht aus m_table eine QList of QStringList aus leeren QStrings
         for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
@@ -216,7 +217,7 @@ void MainWindow::tabelleAnlegen()
             QStringList sList;
             for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
             {
-                m_model->setItem(outerCounter, innerCounter, new QStandardItem (""));
+                m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
                 sList.append(temp);
             }
             list.append(sList);
@@ -242,84 +243,71 @@ void MainWindow::tabelleLoeschen()
 void MainWindow::zeileAnlegen()
 {
     qDebug() << "Zeile anlegen clicked!";
-    qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
 
     QStringList newLine;
 
-    if (m_anzahlZeilen != 0 || m_anzahlSpalten != 0)
+    for (int i = 0; i < m_anzahlSpalten; ++i)
     {
-        for (int i = 0; i < m_anzahlSpalten; ++i)
-        {
-            newLine.append("");
-        }
-        m_table.append(newLine);
-        showTable();
-        qDebug() << "m_anzahlZeilen after method = " << m_anzahlZeilen;
+        newLine.append("");
     }
-    else
-    {
-        qDebug() << "Fehler! Keine Tabelle angelegt.";
-    }
+
+    m_table.append(newLine);
+
+    showTable();
 }
 
 void MainWindow::spalteAnlegen()
 {
     qDebug() << "Spalte anlegen clicked!";
 
-    if(m_anzahlZeilen != 0 || m_anzahlSpalten != 0)
+    for (int i = 0; i < m_anzahlZeilen; ++i)
     {
-        for (int i = 0; i < m_anzahlZeilen; ++i)
-        {
-            m_table[i].append("");
-        }
-        showTable();
+        m_table[i].append("");
     }
-    else
-    {
-        qDebug() << "Fehler! Keine Tabelle angelegt.";
-    }
+
+    showTable();
 }
 
 void MainWindow::zeileLoeschen()
 {
     qDebug() << "Zeile loeschen clicked!";
-    qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
-
-    if(m_anzahlZeilen > 1)
-    {
-        m_table.removeLast();
-        showTable();
-        qDebug() << "m_anzahlZeilen after method = " << m_anzahlZeilen;
-    }
-    else
-    {
-        qDebug() << "Fehler! Es muss mindestens eine Zeile vorhanden sein.";
-    }
 }
 
 void MainWindow::spalteLoeschen()
 {
     qDebug() << "Spalte loeschen clicked!";
-
-    if(m_anzahlSpalten > 1)
-    {
-        for(int i = 0; i < m_table.length(); ++i)
-        {
-            m_table[i].removeLast();
-            showTable();
-        }
-    }
-    else
-    {
-        qDebug() << "Fehler! Es muss mindestens eine Spalte vorhanden sein.";
-    }
 }
 
 /******************************************************************************
- * Methode um bei manueller Änderung der Werte in myTableView,
- * m_table mit diesen Werten upzudaten
+ * Methode um bei Export einer Tabelle m_table mit den Werten von myTableView
+ * abzugleichen und ggf. um diese Werte zu erweitern
  ******************************************************************************/
-//void MainWindow::updateTable(const QModelIndex& topLeft, const QModelIndex& bottomRight)
+void MainWindow::updateTable()
+{
+    qDebug() << "updateTable called!!";
+
+    QString temp = "";
+    QList<QStringList> list;
+
+    for (int outerCounter = 0; outerCounter < m_StdItemModel->rowCount(); ++outerCounter)
+    {
+        QStringList sList;
+        for (int innerCounter = 0; innerCounter < m_StdItemModel->columnCount(); ++innerCounter)
+        {
+            temp = m_StdItemModel->data(m_StdItemModel->index(outerCounter,innerCounter), Qt::DisplayRole).toString();
+            sList.append(temp);
+            qDebug() << sList << "\n";
+        }
+        list.append(sList);
+    }
+    m_table = list;
+}
+
+/******************************************************************************
+ * Methode um den Tabelle exportieren Btn zu deaktivieren sollte keine Tabelle
+ * in myTableView vorhanden sein
+ ******************************************************************************/
+//void MainWindow::disableExportBtn()
 //{
-//    qDebug() << "updateTable called!!";
+//    if (ui->myTableView->columnc())
 //}
