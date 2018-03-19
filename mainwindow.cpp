@@ -242,18 +242,29 @@ void MainWindow::tabelleAnlegen()
 
 void MainWindow::tabelleLoeschen()
 {
-    qDebug() << "Tabelle loeschen clicked!";
+    QMessageBox::StandardButton antwort;
+    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Inhalt der Tabelle wirklich löschen?",
+                                   QMessageBox::Ok | QMessageBox::Abort);
 
-    if(m_anzahlZeilen != 0)
+    if (antwort == QMessageBox::Ok)
     {
-        for (int outerCounter = 0; outerCounter < m_table.length(); ++outerCounter)
+        qDebug() << "Tabelle loeschen clicked!";
+
+        if(m_anzahlZeilen != 0)
         {
-            for (int innerCounter = 0; innerCounter < m_table[outerCounter].length(); ++innerCounter)
+            for (int outerCounter = 0; outerCounter < m_table.length(); ++outerCounter)
             {
-                m_table[outerCounter][innerCounter] = "";
+                for (int innerCounter = 0; innerCounter < m_table[outerCounter].length(); ++innerCounter)
+                {
+                    m_table[outerCounter][innerCounter] = "";
+                }
             }
+            showTable();
         }
-        showTable();
+    }
+    else
+    {
+        return;
     }
 }
 
