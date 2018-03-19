@@ -6,6 +6,7 @@ ExportDialog::ExportDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ExportDialog)
 {
+    qDebug() << "ExportDialog instanziiert...";
     ui->setupUi(this);
 
     connect(ui->abbrechenExportBtn, SIGNAL(clicked(bool)), this, SLOT(abbrechenBtnClicked()));

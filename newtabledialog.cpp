@@ -5,6 +5,7 @@ NewTableDialog::NewTableDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewTableDialog)
 {
+    qDebug() << "NewTableDialog instanziiert...";
     ui->setupUi(this);
 
     connect(ui->abbrechenButton, SIGNAL(clicked(bool)), this, SLOT(abbrechenBtnClicked()));

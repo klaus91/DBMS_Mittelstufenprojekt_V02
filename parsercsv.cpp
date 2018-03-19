@@ -1,12 +1,9 @@
 #include "ParserCsv.h"
 
-
 ParserCsv::ParserCsv()
 {
 //    Constructor
     qDebug() << "ParserCsv() instanziiert...";
-//    Constructor
-//    Constructor
 }
 
 ParserCsv::~ParserCsv()
@@ -81,8 +78,8 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
 }
 
 /******************************************************************************
- * Methode zum erzeugen (oder überschreiben) eines Files und gegebenenfalls Paths mit den angaben aus
- * dem ExportDialog
+ * Methode zum Erzeugen (oder ÜSberschreiben) eines Files und gegebenenfalls
+ * Paths mit den Angaben aus dem ExportDialog
  ******************************************************************************/
 bool ParserCsv::createFile(QString path, QString name, QString format, const QList<QStringList> table)
 {
@@ -128,7 +125,7 @@ bool ParserCsv::createFile(QString path, QString name, QString format, const QLi
 }
 
 /******************************************************************************
- * Methode zum beschreiben des in createFile erzeugten Files mit den daten aus
+ * Methode zum Beschreiben des in createFile erzeugten Files mit den Daten aus
  * m_table von MainWindow
  ******************************************************************************/
 bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
@@ -149,8 +146,6 @@ bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
             }
             out << "\n";
         }
-
-//        m_table
 
 //        m_table
 

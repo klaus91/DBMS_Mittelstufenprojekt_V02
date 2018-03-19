@@ -13,6 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
     m_newTableDialog = new NewTableDialog();
     m_parserCsv = new ParserCsv();
 
+    m_anzahlZeilen = 0;
+    m_anzahlSpalten = 0;
+    //    m_StdItemModel = new QStandardItemModel(0, 0, this);  //<- für den auskommentierten connect...
+    //    ui->myTableView->setModel(m_StdItemModel);
+
+
 
     connect(ui->sucheButton, SIGNAL(clicked()), this, SLOT(eintragSuchen()));
     connect(ui->neueTabelleButton, SIGNAL(clicked()), this, SLOT(tabelleAnlegen()));
@@ -125,6 +131,9 @@ void MainWindow::showDirectory()
     ui->myTreeView->setModel(m_model);
 }
 
+/******************************************************************************
+ * Methode zum Initialisieren des Parsers
+ ******************************************************************************/
 void MainWindow::getParser(QString path)
 {
     if (!path.isEmpty())
@@ -234,6 +243,18 @@ void MainWindow::tabelleAnlegen()
 void MainWindow::tabelleLoeschen()
 {
     qDebug() << "Tabelle loeschen clicked!";
+
+    if(m_anzahlZeilen != 0)
+    {
+        for (int outerCounter = 0; outerCounter < m_table.length(); ++outerCounter)
+        {
+            for (int innerCounter = 0; innerCounter < m_table[outerCounter].length(); ++innerCounter)
+            {
+                m_table[outerCounter][innerCounter] = "";
+            }
+        }
+        showTable();
+    }
 }
 
 void MainWindow::zeileAnlegen()
