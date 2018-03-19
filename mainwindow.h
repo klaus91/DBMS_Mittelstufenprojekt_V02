@@ -32,10 +32,12 @@ public:
     void showDirectory();
     void showTable();
     void updateTable();
-    void disableExportBtn();
+    void modifyBtns();
 
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;
+    bool                m_tableLoaded = false;
+
 
 //    QList<QStringList> getMemberTable(){return m_table;}
 

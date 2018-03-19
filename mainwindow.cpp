@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     MainWindow::eintragSuchen();
+    MainWindow::modifyBtns();
 }
 
 MainWindow::~MainWindow()
@@ -49,8 +50,6 @@ MainWindow::~MainWindow()
 void MainWindow::callExportDlg()
 {
     m_exportDialog->showExportDialog();
-
-
 
     if (m_exportDialog->m_dialogCompleted == true)
     {
@@ -145,6 +144,8 @@ void MainWindow::getParser(QString path)
             m_table = temp;
             qDebug() << "Imported File is a .csv File!";
             m_parserCsv->~ParserCsv();
+            m_tableLoaded = true;
+            modifyBtns();
         }
     }
     else
@@ -228,6 +229,8 @@ void MainWindow::tabelleAnlegen()
 
         m_anzahlZeilen = anzahlZeilen;
         m_anzahlSpalten = anzahlSpalten;
+        m_tableLoaded = true;
+        modifyBtns();
     }
     else
     {
@@ -342,17 +345,25 @@ void MainWindow::updateTable()
 }
 
 /******************************************************************************
- * Methode um den Tabelle exportieren Btn zu deaktivieren sollte keine Tabelle
- * in myTableView vorhanden sein
+ * Methode um Tabelle exporteiren, neue Zeile / Spalte und loesche Zeile / Spalte
+ * Buttons zu aktivieren wenn eine Tabelle in myTableView vorhanden ist
  ******************************************************************************/
-//void MainWindow::disableExportBtn()
-//{
-//    if (m_StdItemModel->columnCount() < 1)
-//    {
-//        ui->exportiereTabelleButton->setEnabled(false);
-//    }
-//    else
-//    {
-//        ui->exportiereTabelleButton->setEnabled(true);
-//    }
-//}
+void MainWindow::modifyBtns()
+{
+    if (m_tableLoaded == false)
+    {
+        ui->exportiereTabelleButton->setEnabled(false);
+        ui->loescheSpalteButton->setEnabled(false);
+        ui->loescheZeileButton->setEnabled(false);
+        ui->neueSpalteButton->setEnabled(false);
+        ui->neueZeileButton->setEnabled(false);
+    }
+    else
+    {
+        ui->exportiereTabelleButton->setEnabled(true);
+        ui->loescheSpalteButton->setEnabled(true);
+        ui->loescheZeileButton->setEnabled(true);
+        ui->neueSpalteButton->setEnabled(true);
+        ui->neueZeileButton->setEnabled(true);
+    }
+}
