@@ -11,12 +11,16 @@
 #include <QTreeView>
 #include <QItemSelectionModel>
 #include <QSignalMapper>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "ui_mainwindow.h"
 #include "datenverwaltung.h"
 #include "exportdialog.h"
 #include "parser.h"
 #include "parsercsv.h"
 #include "newtabledialog.h"
+
+
 
 
 namespace Ui {
@@ -56,6 +60,7 @@ public slots:
     void zeileLoeschen();
     void spalteLoeschen();
     void getParser(QString path);
+
 //    void updateTable(const QModelIndex&, const QModelIndex&);
 
 private slots:

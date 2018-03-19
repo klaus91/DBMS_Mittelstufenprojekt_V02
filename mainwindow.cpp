@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QFileDialog>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,8 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_exportDialog = new ExportDialog();
     m_newTableDialog = new NewTableDialog();
     m_parserCsv = new ParserCsv();
-    //    m_StdItemModel = new QStandardItemModel(0, 0, this);  //<- für den auskommentierten connect...
-    //    ui->myTableView->setModel(m_StdItemModel);
+
 
     connect(ui->sucheButton, SIGNAL(clicked()), this, SLOT(eintragSuchen()));
     connect(ui->neueTabelleButton, SIGNAL(clicked()), this, SLOT(tabelleAnlegen()));
@@ -25,12 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->exportiereTabelleButton,SIGNAL(clicked()), this, SLOT(callExportDlg()));
     connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent()));
     connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(eintragSuchen()));
-
-
-    //    CONNECT um value change in TableView zu registrieren und m_table mit diesen Werten zu updaten....
-    //    connect(ui->myTableView->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this,
-    //                SLOT(updateTable(const QModelIndex&, const QModelIndex&)));
-
 
     MainWindow::eintragSuchen();
     MainWindow::modifyBtns();
@@ -286,36 +279,58 @@ void MainWindow::spalteAnlegen()
 
 void MainWindow::zeileLoeschen()
 {
-    qDebug() << "Zeile loeschen clicked!";
-    qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
+    QMessageBox::StandardButton antwort;
+    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Zeile enthält Daten. Spalte wirklich löschen?",
+                                   QMessageBox::Ok | QMessageBox::Abort);
 
-    if(m_anzahlZeilen > 1)
+    if (antwort == QMessageBox::Ok)
     {
-        m_table.removeLast();
-        showTable();
-        qDebug() << "m_anzahlZeilen after method = " << m_anzahlZeilen;
+        qDebug() << "Zeile loeschen clicked!";
+        qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
+
+        if(m_anzahlZeilen > 1)
+        {
+            m_table.removeLast();
+            showTable();
+            qDebug() << "m_anzahlZeilen after method = " << m_anzahlZeilen;
+        }
+        else
+        {
+            qDebug() << "Fehler! Es muss mindestens eine Zeile vorhanden sein.";
+        }
     }
     else
     {
-        qDebug() << "Fehler! Es muss mindestens eine Zeile vorhanden sein.";
+        return;
     }
 }
 
 void MainWindow::spalteLoeschen()
 {
-    qDebug() << "Spalte loeschen clicked!";
+    QMessageBox::StandardButton antwort;
+    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?",
+                                   QMessageBox::Ok | QMessageBox::Abort);
 
-    if(m_anzahlSpalten > 1)
+    if (antwort == QMessageBox::Ok)
     {
-        for(int i = 0; i < m_table.length(); ++i)
+        qDebug() << "Spalte loeschen clicked!";
+
+        if(m_anzahlSpalten > 1)
         {
-            m_table[i].removeLast();
-            showTable();
+            for(int i = 0; i < m_table.length(); ++i)
+            {
+                m_table[i].removeLast();
+                showTable();
+            }
+        }
+        else
+        {
+            qDebug() << "Fehler! Es muss mindestens eine Spalte vorhanden sein.";
         }
     }
     else
     {
-        qDebug() << "Fehler! Es muss mindestens eine Spalte vorhanden sein.";
+        return;
     }
 }
 
