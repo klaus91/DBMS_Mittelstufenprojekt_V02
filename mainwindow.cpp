@@ -347,5 +347,12 @@ void MainWindow::updateTable()
  ******************************************************************************/
 //void MainWindow::disableExportBtn()
 //{
-//    if (ui->myTableView->columnc())
+//    if (m_StdItemModel->columnCount() < 1)
+//    {
+//        ui->exportiereTabelleButton->setEnabled(false);
+//    }
+//    else
+//    {
+//        ui->exportiereTabelleButton->setEnabled(true);
+//    }
 //}
