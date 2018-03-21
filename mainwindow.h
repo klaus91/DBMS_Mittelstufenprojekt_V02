@@ -37,6 +37,7 @@ public:
     void showTable();
     void updateTable();
     void modifyBtns();
+    bool contentWarnung(QString caller);
 
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;

@@ -89,7 +89,7 @@
         <item>
          <widget class="QPushButton" name="loescheTabelleButton">
           <property name="text">
-           <string>Tabelle löschen</string>
+           <string>Tabelle leeren</string>
           </property>
          </widget>
         </item>

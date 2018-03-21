@@ -88,7 +88,10 @@ void MainWindow::doubleclickEvent()
         qDebug() << path;
         if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
         {
-            getParser(path);
+//            if (contentWarnung("doubleClick"))
+//            {
+                getParser(path);
+//            }
         }
     }
     else
@@ -194,59 +197,59 @@ void MainWindow::showTable()
 void MainWindow::tabelleAnlegen()
 {
     qDebug() << "Tabelle anlegen clicked!";
-    m_newTableDialog->showNewTableDialog();
-    if (m_newTableDialog->m_dialogCompleted == true)
-    {
-        QString rcCount = m_newTableDialog->getValue();
-        QStringList rcCountSL = rcCount.split(";");
-        //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
-        QString zeileString = rcCountSL[0];
-        QString spalteString = rcCountSL[1];
-        //qDebug() << zeileString + " und " + spalteString;
-
-        const int anzahlSpalten = spalteString.toInt();
-        const int anzahlZeilen = zeileString.toInt();
-
-        qDebug() << "Zeilen: " << anzahlZeilen;
-        qDebug() << "Spalten: " << anzahlSpalten;
-
-        QList<QStringList> list;
-        QString temp = "";
-        m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
-
-        // macht aus m_table eine QList of QStringList aus leeren QStrings
-        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
+//    if (contentWarnung("neueTabelle"))
+//    {
+        m_newTableDialog->showNewTableDialog();
+        if (m_newTableDialog->m_dialogCompleted == true)
         {
-            QStringList sList;
-            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+            QString rcCount = m_newTableDialog->getValue();
+            QStringList rcCountSL = rcCount.split(";");
+            //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
+            QString zeileString = rcCountSL[0];
+            QString spalteString = rcCountSL[1];
+            //qDebug() << zeileString + " und " + spalteString;
+
+            const int anzahlSpalten = spalteString.toInt();
+            const int anzahlZeilen = zeileString.toInt();
+
+            qDebug() << "Zeilen: " << anzahlZeilen;
+            qDebug() << "Spalten: " << anzahlSpalten;
+
+            QList<QStringList> list;
+            QString temp = "";
+            m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+
+            // macht aus m_table eine QList of QStringList aus leeren QStrings
+            for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
             {
-                m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
-                sList.append(temp);
+                QStringList sList;
+                for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+                {
+                    m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
+                    sList.append(temp);
+                }
+                list.append(sList);
             }
-            list.append(sList);
+            m_table = list;
+
+            showTable();
+
+            m_anzahlZeilen = anzahlZeilen;
+            m_anzahlSpalten = anzahlSpalten;
+            m_tableLoaded = true;
+            modifyBtns();
         }
-        m_table = list;
 
-        showTable();
-
-        m_anzahlZeilen = anzahlZeilen;
-        m_anzahlSpalten = anzahlSpalten;
-        m_tableLoaded = true;
-        modifyBtns();
-    }
-    else
-    {
-        return;
-    }
+        else
+        {
+            return;
+        }
+//    }
 }
 
 void MainWindow::tabelleLoeschen()
 {
-    QMessageBox::StandardButton antwort;
-    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Inhalt der Tabelle wirklich löschen?",
-                                   QMessageBox::Ok | QMessageBox::Abort);
-
-    if (antwort == QMessageBox::Ok)
+    if (contentWarnung("tabelleLeeren"))
     {
         qDebug() << "Tabelle loeschen clicked!";
 
@@ -311,11 +314,11 @@ void MainWindow::spalteAnlegen()
 
 void MainWindow::zeileLoeschen()
 {
-    QMessageBox::StandardButton antwort;
-    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Zeile enthält Daten. Spalte wirklich löschen?",
-                                   QMessageBox::Ok | QMessageBox::Abort);
+    //    QMessageBox::StandardButton antwort;
+    //    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Zeile enthält Daten. Spalte wirklich löschen?",
+    //                                   QMessageBox::Ok | QMessageBox::Abort);
 
-    if (antwort == QMessageBox::Ok)
+    if (contentWarnung("zeile"))
     {
         qDebug() << "Zeile loeschen clicked!";
         qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
@@ -339,11 +342,11 @@ void MainWindow::zeileLoeschen()
 
 void MainWindow::spalteLoeschen()
 {
-    QMessageBox::StandardButton antwort;
-    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?",
-                                   QMessageBox::Ok | QMessageBox::Abort);
+    //    QMessageBox::StandardButton antwort;
+    //    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?",
+    //                                   QMessageBox::Ok | QMessageBox::Abort);
 
-    if (antwort == QMessageBox::Ok)
+    if (contentWarnung("spalte"))
     {
         qDebug() << "Spalte loeschen clicked!";
 
@@ -414,3 +417,111 @@ void MainWindow::modifyBtns()
         ui->neueZeileButton->setEnabled(true);
     }
 }
+
+/******************************************************************************
+ * Methode um Warnung zu oeffnen wenn sich inder zu löschenden Tabelle, Spalte
+ * oder Zeile Daten befinden
+ ******************************************************************************/
+bool MainWindow::contentWarnung(QString caller)
+{
+    QString callerMessage = "";
+
+    for (int outerCounter = 0; outerCounter < m_StdItemModel->rowCount(); ++outerCounter)
+    {
+        for (int innerCounter = 0; innerCounter < m_StdItemModel->columnCount(); ++innerCounter)
+        {
+            qDebug() << "CONTENT: " << outerCounter << innerCounter << m_StdItemModel->data(m_StdItemModel->index(outerCounter,innerCounter), Qt::DisplayRole).toString();
+            if (m_StdItemModel->data(m_StdItemModel->index(outerCounter,innerCounter), Qt::DisplayRole).toString() != "")
+            {
+                goto callerQuery;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+
+
+callerQuery:
+    if (caller != "")
+    {
+        if (caller == "zeile")
+        {
+            QString temp = m_StdItemModel->data(m_StdItemModel->index(m_StdItemModel->rowCount() - 1, 0), Qt::DisplayRole).toString();
+            qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
+            if (temp != "")
+            {
+                callerMessage = "Die zu löschende Zeile enthält Daten. Spalte wirklich löschen?";
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else if (caller == "spalte")
+        {
+            QString temp = m_StdItemModel->data(m_StdItemModel->index(0, m_StdItemModel->columnCount() - 1), Qt::DisplayRole).toString();
+            qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
+            if (temp != "")
+            {
+                callerMessage = "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?";
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else if (caller == "tabelleLeeren")
+        {
+            callerMessage = "Die Tabelle enthält Daten. Tabelle wirklich leeren?";
+        }
+        else if (caller == "neueTabelle")
+        {
+            callerMessage = "Die Tabelle enthält Daten. Trotzdem neue Tabelle anlegen?";
+        }
+        else if (caller == "doubleClick")
+        {
+            callerMessage = "Die Tabelle enthält Daten. Trotzdem neue Tabelle laden?";
+        }
+        else
+        {
+            qDebug() << "Error: contentWarnung called with unknown String!";
+            return false;
+        }
+
+        QMessageBox::StandardButton antwort;
+        antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", callerMessage,
+                                       QMessageBox::Ok | QMessageBox::Abort);
+        if (antwort == QMessageBox::Ok)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
