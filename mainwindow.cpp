@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_exportDialog = new ExportDialog();
     m_newTableDialog = new NewTableDialog();
     m_parserCsv = new ParserCsv();
+    m_parserXml = new ParserXml();
 
     m_anzahlZeilen = 0;
     m_anzahlSpalten = 0;
@@ -84,12 +85,15 @@ void MainWindow::doubleclickEvent()
     if (index.isValid())
     {
         info = m_FSystemModel->fileInfo(index);
-        path = info.absoluteFilePath();
-        qDebug() << path;
-        if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
+        if (info.isFile())
         {
-//            if (contentWarnung("doubleClick"))
+            path = info.absoluteFilePath();
+            qDebug() << path;
+//            if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
 //            {
+//                if (contentWarnung("doubleClick"))
+//                {
+//                }
                 getParser(path);
 //            }
         }
@@ -152,6 +156,17 @@ void MainWindow::getParser(QString path)
             m_tableLoaded = true;
             modifyBtns();
         }
+        else if (path.contains(".xml"))
+        {
+            m_parserXml = new ParserXml();
+            qDebug() << "Imported File is a .xml File!";
+            m_parserXml->~ParserXml();
+
+            qDebug() << "Doppelklick auf XML-Datei! Fortsetzung folgt... ;-)";
+
+//            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
+//            beruecksichtigt worden.
+        }
     }
     else
     {
@@ -197,54 +212,54 @@ void MainWindow::showTable()
 void MainWindow::tabelleAnlegen()
 {
     qDebug() << "Tabelle anlegen clicked!";
-//    if (contentWarnung("neueTabelle"))
-//    {
-        m_newTableDialog->showNewTableDialog();
-        if (m_newTableDialog->m_dialogCompleted == true)
+    //    if (contentWarnung("neueTabelle"))
+    //    {
+    m_newTableDialog->showNewTableDialog();
+    if (m_newTableDialog->m_dialogCompleted == true)
+    {
+        QString rcCount = m_newTableDialog->getValue();
+        QStringList rcCountSL = rcCount.split(";");
+        //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
+        QString zeileString = rcCountSL[0];
+        QString spalteString = rcCountSL[1];
+        //qDebug() << zeileString + " und " + spalteString;
+
+        const int anzahlSpalten = spalteString.toInt();
+        const int anzahlZeilen = zeileString.toInt();
+
+        qDebug() << "Zeilen: " << anzahlZeilen;
+        qDebug() << "Spalten: " << anzahlSpalten;
+
+        QList<QStringList> list;
+        QString temp = "";
+        m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+
+        // macht aus m_table eine QList of QStringList aus leeren QStrings
+        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
         {
-            QString rcCount = m_newTableDialog->getValue();
-            QStringList rcCountSL = rcCount.split(";");
-            //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
-            QString zeileString = rcCountSL[0];
-            QString spalteString = rcCountSL[1];
-            //qDebug() << zeileString + " und " + spalteString;
-
-            const int anzahlSpalten = spalteString.toInt();
-            const int anzahlZeilen = zeileString.toInt();
-
-            qDebug() << "Zeilen: " << anzahlZeilen;
-            qDebug() << "Spalten: " << anzahlSpalten;
-
-            QList<QStringList> list;
-            QString temp = "";
-            m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
-
-            // macht aus m_table eine QList of QStringList aus leeren QStrings
-            for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
+            QStringList sList;
+            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
             {
-                QStringList sList;
-                for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
-                {
-                    m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
-                    sList.append(temp);
-                }
-                list.append(sList);
+                m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
+                sList.append(temp);
             }
-            m_table = list;
-
-            showTable();
-
-            m_anzahlZeilen = anzahlZeilen;
-            m_anzahlSpalten = anzahlSpalten;
-            m_tableLoaded = true;
-            modifyBtns();
+            list.append(sList);
         }
+        m_table = list;
 
-        else
-        {
-            return;
-        }
-//    }
+        showTable();
+
+        m_anzahlZeilen = anzahlZeilen;
+        m_anzahlSpalten = anzahlSpalten;
+        m_tableLoaded = true;
+        modifyBtns();
+    }
+
+    else
+    {
+        return;
+    }
+    //    }
 }
 
 void MainWindow::tabelleLoeschen()
@@ -452,7 +467,7 @@ callerQuery:
             qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
             if (temp != "")
             {
-                callerMessage = "Die zu löschende Zeile enthält Daten. Spalte wirklich löschen?";
+                callerMessage = "Die zu löschende Zeile enthält Daten. Zeile wirklich löschen?";
             }
             else
             {
@@ -504,24 +519,3 @@ callerQuery:
     }
     return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

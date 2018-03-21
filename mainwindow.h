@@ -18,6 +18,7 @@
 #include "exportdialog.h"
 #include "parser.h"
 #include "parsercsv.h"
+#include "parserxml.h"
 #include "newtabledialog.h"
 
 
@@ -41,6 +42,7 @@ public:
 
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;
+    ParserXml           *m_parserXml;
     bool                m_tableLoaded = false;
 
 

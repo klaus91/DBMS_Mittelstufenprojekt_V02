@@ -2,18 +2,21 @@
 
 ParserXml::ParserXml()
 {
+    qDebug() << "ParserXml instanziiert...";
     //Constructor
 }
 
 ParserXml::~ParserXml()
 {
     //Destructor
+    qDebug() << "ParserXml zerstoert...";
 }
 
 void ParserXml::loadTable(QString path)
 {
     qDebug() << "getTable() called";
     openFile(path);
+    qDebug() << "File opened: " << path;
 }
 void ParserXml::saveTable(QString path, QString name, QString format, const QList<QStringList> table)
 {
