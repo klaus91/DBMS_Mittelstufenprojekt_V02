@@ -106,15 +106,17 @@ void MainWindow::doubleclickEvent()
 
 /******************************************************************************
  * Methode zum aktivieren des Suche Buttons sowie
- * zum filtern des Treeviews (Filter -> QSortFilterProxy?!)
+ * zum filtern des TableViews
  ******************************************************************************/
 void MainWindow::eintragSuchen()
 {
-    if (ui->sucheLineEdit->text() != "")
+    QString temp = ui->sucheLineEdit->text();
+    if (temp != "")
     {
         ui->sucheButton->setEnabled(true);
         qDebug() << "eintragSuchen called!/n";
-        qDebug() << ui->sucheLineEdit->text();
+        qDebug() << temp;
+        ui->myTableView->keyboardSearch(temp);
     }
     else
     {
@@ -329,10 +331,6 @@ void MainWindow::spalteAnlegen()
 
 void MainWindow::zeileLoeschen()
 {
-    //    QMessageBox::StandardButton antwort;
-    //    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Zeile enthält Daten. Spalte wirklich löschen?",
-    //                                   QMessageBox::Ok | QMessageBox::Abort);
-
     if (contentWarnung("zeile"))
     {
         qDebug() << "Zeile loeschen clicked!";
@@ -356,11 +354,7 @@ void MainWindow::zeileLoeschen()
 }
 
 void MainWindow::spalteLoeschen()
-{
-    //    QMessageBox::StandardButton antwort;
-    //    antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?",
-    //                                   QMessageBox::Ok | QMessageBox::Abort);
-
+{     
     if (contentWarnung("spalte"))
     {
         qDebug() << "Spalte loeschen clicked!";
