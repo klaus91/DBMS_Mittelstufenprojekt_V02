@@ -89,13 +89,13 @@ void MainWindow::doubleclickEvent()
         {
             path = info.absoluteFilePath();
             qDebug() << path;
-//            if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
-//            {
-//                if (contentWarnung("doubleClick"))
-//                {
-//                }
-                getParser(path);
-//            }
+            //            if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
+            //            {
+            //                if (contentWarnung("doubleClick"))
+            //                {
+            //                }
+            getParser(path);
+            //            }
         }
     }
     else
@@ -161,20 +161,21 @@ void MainWindow::getParser(QString path)
         else if (path.contains(".xml"))
         {
             m_parserXml = new ParserXml();
+            m_parserXml->loadTable(path);
             qDebug() << "Imported File is a .xml File!";
             m_parserXml->~ParserXml();
 
-            qDebug() << "Doppelklick auf XML-Datei! Fortsetzung folgt... ;-)";
-
-//            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
-//            beruecksichtigt worden.
+            qDebug() << "Doppelklick auf XML-Datei!";
         }
     }
     else
     {
         return;
     }
-    showTable();
+    if(!m_table.length() == 0)
+    {
+        showTable();
+    }
 }
 
 /******************************************************************************

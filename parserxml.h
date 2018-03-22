@@ -2,6 +2,7 @@
 #define PARSERXML_H
 
 #include "parser.h"
+#include <QXmlStreamReader>
 
 
 class ParserXml : public Parser
