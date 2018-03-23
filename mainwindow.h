@@ -37,13 +37,14 @@ public:
     void showDirectory();
     void showTable();
     void updateTable();
-    void modifyBtns();
+    //void modifyBtns();
     bool contentWarnung(QString caller);
 
     QList<QStringList>  m_table;
     ParserCsv           *m_parserCsv;
     ParserXml           *m_parserXml;
     bool                m_tableLoaded = false;
+    QStringList         m_searchResults;
 
 
 //    QList<QStringList> getMemberTable(){return m_table;}
@@ -63,6 +64,7 @@ public slots:
     void zeileLoeschen();
     void spalteLoeschen();
     void getParser(QString path);
+    void modifyBtns();
 
 //    void updateTable(const QModelIndex&, const QModelIndex&);
 

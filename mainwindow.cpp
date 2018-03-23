@@ -30,9 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->loescheSpalteButton, SIGNAL(clicked()), this, SLOT(spalteLoeschen()));
     connect(ui->exportiereTabelleButton,SIGNAL(clicked()), this, SLOT(callExportDlg()));
     connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent()));
-    connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(eintragSuchen()));
+    connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(modifyBtns()));
 
-    MainWindow::eintragSuchen();
+    //MainWindow::eintragSuchen();
     MainWindow::modifyBtns();
 }
 
@@ -105,23 +105,69 @@ void MainWindow::doubleclickEvent()
 }
 
 /******************************************************************************
- * Methode zum aktivieren des Suche Buttons sowie
- * zum filtern des TableViews
+ * Methode zum durchsuchen des TableViews
  ******************************************************************************/
 void MainWindow::eintragSuchen()
 {
+    ui->myTableView->clearSelection();
     QString temp = ui->sucheLineEdit->text();
-    if (temp != "")
+    if (temp != "" && m_searchResults.empty())
     {
-        ui->sucheButton->setEnabled(true);
-        qDebug() << "eintragSuchen called!/n";
+        qDebug() << "eintragSuchen called!";
         qDebug() << temp;
         ui->myTableView->keyboardSearch(temp);
+
+        for (int outerCounter = 0; outerCounter < m_StdItemModel->rowCount(); ++outerCounter)
+        {
+            for (int innerCounter = 0; innerCounter < m_StdItemModel->columnCount(); ++innerCounter)
+            {
+                QString bla = m_StdItemModel->data(m_StdItemModel->index(outerCounter,innerCounter), Qt::DisplayRole).toString();
+                if (bla.contains(temp))
+                {
+                    QString row = QString::number(outerCounter);
+                    QString column = QString::number(innerCounter);
+                    QString result = "0;" + row +  ";" +  column;
+                    m_searchResults.append(result);
+                }
+            }
+        }
+        qDebug() << "Suchergebnisse: " << m_searchResults.size();
     }
-    else
+
+    if (temp != "" && !m_searchResults.empty())
     {
-        ui->sucheButton->setEnabled(false);
+        /* entleert m_searchResult wenn es einmal durchlaufen wurde (scroll to beginnt von neuem) */
+        int size = m_searchResults.size() - 1;
+        QString lastValue = m_searchResults.at(size);
+        QStringList lastValueCall = lastValue.split(";");
+        if (lastValueCall[0] == "1")
+        {
+                m_searchResults.clear();
+        }
+
+        for (int counter = 0; counter < m_searchResults.size(); ++counter)
+        {
+            QString result = m_searchResults.at(counter);
+            QStringList temp = result.split(";");
+            if (temp[0] == "0")
+            {
+                QString rowS = temp[1];
+                QString columnS = temp[2];
+                int row = rowS.toInt();
+                int column = columnS.toInt();
+                QModelIndex index = ui->myTableView->model()->index(row, column);
+                ui->myTableView->scrollTo(index);
+                ui->myTableView->selectionModel()->select(index, QItemSelectionModel::Select);
+                QString myString = "1;" + rowS + ";" + columnS;
+                qDebug() <<  m_searchResults.at(counter);
+                m_searchResults.replace(counter, myString);
+                qDebug() <<  m_searchResults.at(counter);
+
+                goto stop;
+            }
+        }
     }
+    stop:;
 }
 
 /******************************************************************************
@@ -165,7 +211,14 @@ void MainWindow::getParser(QString path)
             qDebug() << "Imported File is a .xml File!";
             m_parserXml->~ParserXml();
 
+
+            qDebug() << "Doppelklick auf XML-Datei! Fortsetzung folgt... ;-)";
+
+//            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
+//            beruecksichtigt worden.
+
             qDebug() << "Doppelklick auf XML-Datei!";
+
         }
     }
     else
@@ -405,8 +458,8 @@ void MainWindow::updateTable()
 }
 
 /******************************************************************************
- * Methode um Tabelle exporteiren, neue Zeile / Spalte und loesche Zeile / Spalte
- * Buttons zu aktivieren wenn eine Tabelle in myTableView vorhanden ist
+ * Methode um Tabelle exporteiren, neue Zeile / Spalte, loesche Zeile / Spalte und
+ * Suche Buttons zu aktivieren wenn eine Tabelle in myTableView vorhanden ist
  ******************************************************************************/
 void MainWindow::modifyBtns()
 {
@@ -417,6 +470,11 @@ void MainWindow::modifyBtns()
         ui->loescheZeileButton->setEnabled(false);
         ui->neueSpalteButton->setEnabled(false);
         ui->neueZeileButton->setEnabled(false);
+        if (ui->sucheLineEdit->text() == "")
+        {
+            ui->sucheButton->setEnabled(false);
+            m_searchResults.clear();
+        }
     }
     else
     {
@@ -425,6 +483,11 @@ void MainWindow::modifyBtns()
         ui->loescheZeileButton->setEnabled(true);
         ui->neueSpalteButton->setEnabled(true);
         ui->neueZeileButton->setEnabled(true);
+        if (ui->sucheLineEdit->text() != "")
+        {
+            ui->sucheButton->setEnabled(true);
+            m_searchResults.clear();
+        }
     }
 }
 
@@ -451,7 +514,6 @@ bool MainWindow::contentWarnung(QString caller)
             }
         }
     }
-
 
 callerQuery:
     if (caller != "")
