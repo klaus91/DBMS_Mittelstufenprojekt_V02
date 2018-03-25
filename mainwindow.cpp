@@ -106,10 +106,11 @@ void MainWindow::doubleclickEvent()
 
 /******************************************************************************
  * Methode zum durchsuchen des TableViews
+ * m_searchResults enthält alle zur Suche passenden Ergebnisse in einer QStringList
+ * Format: flag ob Eintrag schon angezeigt wurde 0 = nein 1 = ja;row;column (0;1;2)
  ******************************************************************************/
 void MainWindow::eintragSuchen()
 {
-    ui->myTableView->clearSelection();
     QString temp = ui->sucheLineEdit->text();
     if (temp != "" && m_searchResults.empty())
     {
@@ -136,6 +137,7 @@ void MainWindow::eintragSuchen()
 
     if (temp != "" && !m_searchResults.empty())
     {
+        ui->myTableView->clearSelection();
         /* entleert m_searchResult wenn es einmal durchlaufen wurde (scroll to beginnt von neuem) */
         int size = m_searchResults.size() - 1;
         QString lastValue = m_searchResults.at(size);
@@ -159,9 +161,9 @@ void MainWindow::eintragSuchen()
                 ui->myTableView->scrollTo(index);
                 ui->myTableView->selectionModel()->select(index, QItemSelectionModel::Select);
                 QString myString = "1;" + rowS + ";" + columnS;
-                qDebug() <<  m_searchResults.at(counter);
+                qDebug() << "Jetziges Suchergebnis: " << m_searchResults.at(counter);
                 m_searchResults.replace(counter, myString);
-                qDebug() <<  m_searchResults.at(counter);
+                qDebug() << "Flag gesetzt: " << m_searchResults.at(counter);
 
                 goto stop;
             }
@@ -486,6 +488,11 @@ void MainWindow::modifyBtns()
         if (ui->sucheLineEdit->text() != "")
         {
             ui->sucheButton->setEnabled(true);
+            m_searchResults.clear();
+        }
+        else if (ui->sucheLineEdit->text() == "")
+        {
+            ui->sucheButton->setEnabled(false);
             m_searchResults.clear();
         }
     }
