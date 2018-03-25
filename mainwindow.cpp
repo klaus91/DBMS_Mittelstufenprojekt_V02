@@ -114,6 +114,7 @@ void MainWindow::eintragSuchen()
     QString temp = ui->sucheLineEdit->text();
     if (temp != "" && m_searchResults.empty())
     {
+        goToFirstElement:;
         qDebug() << "eintragSuchen called!";
         qDebug() << temp;
         ui->myTableView->keyboardSearch(temp);
@@ -145,6 +146,7 @@ void MainWindow::eintragSuchen()
         if (lastValueCall[0] == "1")
         {
                 m_searchResults.clear();
+                goto goToFirstElement;
         }
 
         for (int counter = 0; counter < m_searchResults.size(); ++counter)
@@ -160,6 +162,7 @@ void MainWindow::eintragSuchen()
                 QModelIndex index = ui->myTableView->model()->index(row, column);
                 ui->myTableView->scrollTo(index);
                 ui->myTableView->selectionModel()->select(index, QItemSelectionModel::Select);
+                ui->myTableView->setStyleSheet("selection-background-color: red");
                 QString myString = "1;" + rowS + ";" + columnS;
                 qDebug() << "Jetziges Suchergebnis: " << m_searchResults.at(counter);
                 m_searchResults.replace(counter, myString);
