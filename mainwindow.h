@@ -36,8 +36,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void showDirectory();
     void showTable();
-    void updateTable();
-    //void modifyBtns();
     bool contentWarnung(QString caller);
 
     QList<QStringList>  m_table;
@@ -65,6 +63,7 @@ public slots:
     void spalteLoeschen();
     void getParser(QString path);
     void modifyBtns();
+    void updateTable();
 
 //    void updateTable(const QModelIndex&, const QModelIndex&);
 

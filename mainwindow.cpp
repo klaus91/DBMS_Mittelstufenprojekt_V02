@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->exportiereTabelleButton,SIGNAL(clicked()), this, SLOT(callExportDlg()));
     connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent()));
     connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(modifyBtns()));
+    connect(ui->myTableView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateTable()));
+
 
     //MainWindow::eintragSuchen();
     MainWindow::modifyBtns();
@@ -145,8 +147,8 @@ void MainWindow::eintragSuchen()
         QStringList lastValueCall = lastValue.split(";");
         if (lastValueCall[0] == "1")
         {
-                m_searchResults.clear();
-                goto goToFirstElement;
+            m_searchResults.clear();
+            goto goToFirstElement;
         }
 
         for (int counter = 0; counter < m_searchResults.size(); ++counter)
@@ -172,7 +174,7 @@ void MainWindow::eintragSuchen()
             }
         }
     }
-    stop:;
+stop:;
 }
 
 /******************************************************************************
@@ -219,8 +221,8 @@ void MainWindow::getParser(QString path)
 
             qDebug() << "Doppelklick auf XML-Datei! Fortsetzung folgt... ;-)";
 
-//            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
-//            beruecksichtigt worden.
+            //            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
+            //            beruecksichtigt worden.
 
             qDebug() << "Doppelklick auf XML-Datei!";
 
@@ -323,8 +325,13 @@ void MainWindow::tabelleAnlegen()
     //    }
 }
 
+/******************************************************************************
+ * Methode zum leeren der Zellen von myTableView
+ ******************************************************************************/
 void MainWindow::tabelleLoeschen()
 {
+    updateTable();
+
     if (contentWarnung("tabelleLeeren"))
     {
         qDebug() << "Tabelle loeschen clicked!";
@@ -345,10 +352,16 @@ void MainWindow::tabelleLoeschen()
     {
         return;
     }
+    updateTable();
 }
 
+/******************************************************************************
+ * Methode zum anlegen einer neuen Zeile im myTableView
+ ******************************************************************************/
 void MainWindow::zeileAnlegen()
 {
+    updateTable();
+
     qDebug() << "Zeile anlegen clicked!";
     qDebug() << "m_anzahlZeilen before method = " << m_anzahlZeilen;
 
@@ -370,8 +383,13 @@ void MainWindow::zeileAnlegen()
     }
 }
 
+/******************************************************************************
+ * Methode zum anlegen einer neuen Spalte im myTableView
+ ******************************************************************************/
 void MainWindow::spalteAnlegen()
 {
+    updateTable();
+
     qDebug() << "Spalte anlegen clicked!";
 
     if(m_anzahlZeilen != 0 || m_anzahlSpalten != 0)
@@ -388,8 +406,13 @@ void MainWindow::spalteAnlegen()
     }
 }
 
+/******************************************************************************
+ * Methode zum löschen der letzten Zeile im myTableView
+ ******************************************************************************/
 void MainWindow::zeileLoeschen()
 {
+    updateTable();
+
     if (contentWarnung("zeile"))
     {
         qDebug() << "Zeile loeschen clicked!";
@@ -412,8 +435,13 @@ void MainWindow::zeileLoeschen()
     }
 }
 
+/******************************************************************************
+ * Methode zum löschen der letzten Spalte im myTableView
+ ******************************************************************************/
 void MainWindow::spalteLoeschen()
-{     
+{
+    updateTable();
+
     if (contentWarnung("spalte"))
     {
         qDebug() << "Spalte loeschen clicked!";
@@ -455,7 +483,7 @@ void MainWindow::updateTable()
         {
             temp = m_StdItemModel->data(m_StdItemModel->index(outerCounter,innerCounter), Qt::DisplayRole).toString();
             sList.append(temp);
-            qDebug() << sList << "\n";
+            //qDebug() << sList << "\n";
         }
         list.append(sList);
     }
@@ -518,41 +546,40 @@ bool MainWindow::contentWarnung(QString caller)
             {
                 goto callerQuery;
             }
-            else
-            {
-                return true;
-            }
         }
     }
+    return true;
 
 callerQuery:
     if (caller != "")
     {
         if (caller == "zeile")
         {
-            QString temp = m_StdItemModel->data(m_StdItemModel->index(m_StdItemModel->rowCount() - 1, 0), Qt::DisplayRole).toString();
-            qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
-            if (temp != "")
+            for (int innerCounter = 0; innerCounter < m_StdItemModel->columnCount(); ++innerCounter)
             {
-                callerMessage = "Die zu löschende Zeile enthält Daten. Zeile wirklich löschen?";
+                QString temp = m_StdItemModel->data(m_StdItemModel->index(m_StdItemModel->rowCount() - 1, innerCounter), Qt::DisplayRole).toString();
+                qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
+                if (temp != "")
+                {
+                    callerMessage = "Die zu löschende Zeile enthält Daten. Zeile wirklich löschen?";
+                    goto message;
+                }
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
         else if (caller == "spalte")
         {
-            QString temp = m_StdItemModel->data(m_StdItemModel->index(0, m_StdItemModel->columnCount() - 1), Qt::DisplayRole).toString();
-            qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
-            if (temp != "")
+            for (int outerCounter = 0; outerCounter < m_StdItemModel->rowCount(); ++outerCounter)
             {
-                callerMessage = "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?";
+                QString temp = m_StdItemModel->data(m_StdItemModel->index(outerCounter, m_StdItemModel->columnCount() - 1), Qt::DisplayRole).toString();
+                qDebug() << "innerCONTENT: " << m_StdItemModel->rowCount() << "0" << temp;
+                if (temp != "")
+                {
+                    callerMessage = "Die zu löschende Spalte enthält Daten. Spalte wirklich löschen?";
+                    goto message;
+                }
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
         else if (caller == "tabelleLeeren")
         {
@@ -572,6 +599,7 @@ callerQuery:
             return false;
         }
 
+        message:;
         QMessageBox::StandardButton antwort;
         antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", callerMessage,
                                        QMessageBox::Ok | QMessageBox::Abort);
