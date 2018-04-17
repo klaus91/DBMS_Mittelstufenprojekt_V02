@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
     void showDirectory();
     void showTable();
     bool contentWarnung(QString caller);
@@ -44,32 +45,6 @@ public:
     bool                m_tableLoaded = false;
     QStringList         m_searchResults;
 
-
-//    QList<QStringList> getMemberTable(){return m_table;}
-
-
-//    ParserCsv getMemberParser(){return m_parserCsv;}
-
-    ~MainWindow();
-
-public slots:
-    void doubleclickEvent();
-    void eintragSuchen();
-    void tabelleAnlegen();
-    void tabelleLoeschen();
-    void zeileAnlegen();
-    void spalteAnlegen();
-    void zeileLoeschen();
-    void spalteLoeschen();
-    void getParser(QString path);
-    void modifyBtns();
-    void updateTable();
-
-//    void updateTable(const QModelIndex&, const QModelIndex&);
-
-private slots:
-    void callExportDlg();
-
 private:
     Ui::MainWindow      *ui;
     ExportDialog        *m_exportDialog;
@@ -79,6 +54,29 @@ private:
 
     int                 m_anzahlZeilen;
     int                 m_anzahlSpalten;
+//    QList<QStringList> getMemberTable(){return m_table;}
+
+
+//    ParserCsv getMemberParser(){return m_parserCsv;}
+
+
+public slots:
+    void getParser(QString path);
+
+//    void updateTable(const QModelIndex&, const QModelIndex&);
+
+private slots:
+    void doubleclickEvent();
+    void eintragSuchen();
+    void tabelleAnlegen();
+    void tabelleLoeschen();
+    void zeileAnlegen();
+    void spalteAnlegen();
+    void zeileLoeschen();
+    void spalteLoeschen();
+    void modifyBtns();
+    void updateTable();
+    void callExportDlg();
 };
 
 #endif // MAINWINDOW_H

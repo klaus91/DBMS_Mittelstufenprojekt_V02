@@ -27,8 +27,9 @@ public:
 signals:
 
 public slots:
-
     void showExportDialog();
+
+private slots:
     void abbrechenBtnClicked();
     void namePathChanged();
     void okBtnClicked();

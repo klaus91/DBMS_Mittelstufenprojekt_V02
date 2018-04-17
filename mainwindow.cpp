@@ -119,7 +119,6 @@ void MainWindow::eintragSuchen()
         goToFirstElement:;
         qDebug() << "eintragSuchen called!";
         qDebug() << temp;
-        ui->myTableView->keyboardSearch(temp);
 
         for (int outerCounter = 0; outerCounter < m_StdItemModel->rowCount(); ++outerCounter)
         {
@@ -204,8 +203,7 @@ void MainWindow::getParser(QString path)
         {
             m_parserCsv = new ParserCsv();
             m_parserCsv->loadTable(path);
-            QList<QStringList> temp = m_parserCsv->getMemberTable();
-            m_table = temp;
+            m_table = m_parserCsv->getMemberTable();
             qDebug() << "Imported File is a .csv File!";
             m_parserCsv->~ParserCsv();
             m_tableLoaded = true;
@@ -218,11 +216,8 @@ void MainWindow::getParser(QString path)
             qDebug() << "Imported File is a .xml File!";
             m_parserXml->~ParserXml();
 
-
-            qDebug() << "Doppelklick auf XML-Datei! Fortsetzung folgt... ;-)";
-
-            //            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
-            //            beruecksichtigt worden.
+//            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
+//            beruecksichtigt worden.
 
             qDebug() << "Doppelklick auf XML-Datei!";
 

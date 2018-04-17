@@ -24,13 +24,8 @@ public:
 
 signals:
 
-
 public slots:
     void showNewTableDialog();
-    void abbrechenBtnClicked();
-    void rowColumnsChanged();
-    void okBtnClicked();
-
 
 protected:
 
@@ -38,6 +33,10 @@ private:
     Ui::NewTableDialog *ui;
     QString            m_rowColumnsCount;
 
+private slots:
+    void abbrechenBtnClicked();
+    void rowColumnsChanged();
+    void okBtnClicked();
 };
 
 #endif // NEWTABLEDIALOG_H

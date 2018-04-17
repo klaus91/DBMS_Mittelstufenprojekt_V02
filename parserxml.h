@@ -4,7 +4,6 @@
 #include "parser.h"
 #include <QXmlStreamReader>
 
-
 class ParserXml : public Parser
 {
 public:

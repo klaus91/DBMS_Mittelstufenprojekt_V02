@@ -44,23 +44,79 @@ bool ParserXml::openFile(QString path)
     return true;
 }
 
+//QList<QStringList> ParserXml::readFile(QFile &file)
+//{
+//    //TODO
+//    qDebug() << "XML readFile called...";
+
+//    QStringList elements;
+//    QList<QStringList> lines;
+//    QXmlStreamReader in(&file);
+
+//    int i = 0;
+
+//    while(in.readNextStartElement())
+//    {
+//        QString element = in.readElementText();
+//        qDebug() << "XML: Lese Element...";
+//        qDebug(qPrintable(element));
+//        qDebug() << element;
+//        elements.append(element);
+//    }
+
+//    return lines;
+//}
+
 QList<QStringList> ParserXml::readFile(QFile &file)
 {
     //TODO
-    qDebug() << "readFile called...";
+    qDebug() << "XML readFile called...";
 
     QStringList elements;
     QList<QStringList> lines;
-    QXmlStreamReader in(&file);
 
-    int i = 0;
 
-    while(in.readNextStartElement())
+
+    QXmlStreamReader xml(&file);
+
+    while(!xml.atEnd() && !xml.hasError())
     {
-        QString element = in.readElementText();
-        qDebug(qPrintable(element));
-        qDebug() << element;
-        elements.append(element);
+        if (xml.readNextStartElement())
+        {
+            qDebug() << "*************************";
+            qDebug() << xml.name().toString();
+        }
+        else
+        {
+            qDebug() << "No start element found...";
+        }
+
+
+
+
+
+
+
+
+
+
+//        QXmlStreamReader::TokenType token = xml.readNext();
+
+//        if(token == QXmlStreamReader::StartDocument)
+//        {
+//            qDebug() << "token == StartDocument";
+
+//            if(token == QXmlStreamReader::StartElement)
+//            {
+//                qDebug() << "token == StartElement";
+
+//                if(xml.name() == "persons")
+//                {
+//                    qDebug() << "Lese Person...";
+//                    continue;
+//                }
+//            }
+//        }
     }
 
     return lines;
