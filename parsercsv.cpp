@@ -2,14 +2,14 @@
 
 ParserCsv::ParserCsv()
 {
-//    Constructor
+    //    Constructor
     qDebug() << "ParserCsv() instanziiert...";
 }
 
 ParserCsv::~ParserCsv()
 {
     qDebug() << "ParserCsv() zerstoert...";
-//    Destructor
+    //    Destructor
 }
 
 void ParserCsv::loadTable(QString path)
@@ -18,10 +18,15 @@ void ParserCsv::loadTable(QString path)
     openFile(path);
 }
 
-void ParserCsv::saveTable(QString path, QString name, QString format, const QList<QStringList> table)
+//void ParserCsv::saveTable(QString path, QString name, QString format, const QList<QStringList> table)
+//{
+//    qDebug() << "saveTable called with: " << path + name + format;
+//    createFile(path, name, format, table);
+//}
+
+void ParserCsv::saveTable(QString fileName, const QList<QStringList> table)
 {
-    qDebug() << "saveTable called with: " << path + name + format;
-    createFile(path, name, format, table);
+    createFile(fileName, table);
 }
 
 /******************************************************************************
@@ -78,49 +83,67 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
 }
 
 /******************************************************************************
- * Methode zum Erzeugen (oder ÜSberschreiben) eines Files und gegebenenfalls
+ * Methode zum Erzeugen (oder Ueberschreiben) eines Files und gegebenenfalls
  * Paths mit den Angaben aus dem ExportDialog
  ******************************************************************************/
-bool ParserCsv::createFile(QString path, QString name, QString format, const QList<QStringList> table)
+//bool ParserCsv::createFile(QString path, QString name, QString format, const QList<QStringList> table)
+//{
+//    if (path != "")
+//    {
+//        qDebug() << "createFile called with: " << path + name + format;
+//        QDir dir;
+//        QFile file(path + name + format);
+
+//        if (!dir.exists(path))
+//        {
+//            dir.mkpath(path);
+//            qDebug() << "New directory created.";
+
+//            if (file.open(QIODevice::ReadWrite))
+//            {
+//                qDebug()<<"New file created.";
+//                writeFile(file, table);
+//            }
+//        }
+//        else
+//        {
+//            if (!file.exists())
+//            {
+//                file.open(QIODevice::ReadWrite);
+//                qDebug()<<"New file created.";
+//                writeFile(file, table);
+//            }
+//            else
+//            {
+//                file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+//                qDebug()<<"Existing file overwritten.";
+//                writeFile(file, table);
+//            }
+//        }
+//        return true;
+//    }
+//    else
+//    {
+//        qDebug() << "Error: incorrect filepath and/or filename!";
+//        return false;
+//    }
+//}
+
+void ParserCsv::createFile(QString fileName, const QList<QStringList> table)
 {
-    if (path != "")
+    if (fileName.isEmpty())
     {
-        qDebug() << "createFile called with: " << path + name + format;
-        QDir dir;
-        QFile file(path + name + format);
-
-        if (!dir.exists(path))
-        {
-            dir.mkpath(path);
-            qDebug() << "New directory created.";
-
-            if (file.open(QIODevice::ReadWrite))
-            {
-                qDebug()<<"New file created.";
-                writeFile(file, table);
-            }
-        }
-        else
-        {
-            if (!file.exists())
-            {
-                file.open(QIODevice::ReadWrite);
-                qDebug()<<"New file created.";
-                writeFile(file, table);
-            }
-            else
-            {
-                file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
-                qDebug()<<"Existing file overwritten.";
-                writeFile(file, table);
-            }
-        }
-        return true;
+        return;
     }
     else
     {
-        qDebug() << "Error: incorrect filepath and/or filename!";
-        return false;
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+//            int ret = QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            return;
+        }
+        writeFile(file, table);
     }
 }
 
@@ -147,7 +170,7 @@ bool ParserCsv::writeFile(QFile &file, const QList<QStringList> table)
             out << "\n";
         }
 
-//        m_table
+        //        m_table
 
         file.close();
     }

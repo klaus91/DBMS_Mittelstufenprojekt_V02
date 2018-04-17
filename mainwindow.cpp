@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_exportDialog = new ExportDialog();
     m_newTableDialog = new NewTableDialog();
     m_parserCsv = new ParserCsv();
-    m_parserXml = new ParserXml();
+    //    m_parserXml = new ParserXml();
 
     m_anzahlZeilen = 0;
     m_anzahlSpalten = 0;
@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->myTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleclickEvent()));
     connect(ui->sucheLineEdit, SIGNAL(textChanged(QString)), this, SLOT(modifyBtns()));
     connect(ui->myTableView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateTable()));
+    connect(ui->oeffneTabelleButton, SIGNAL(clicked()), this, SLOT(openFileDialog()));
 
 
     //MainWindow::eintragSuchen();
@@ -51,28 +52,46 @@ MainWindow::~MainWindow()
  ******************************************************************************/
 void MainWindow::callExportDlg()
 {
-    m_exportDialog->showExportDialog();
+    //    m_exportDialog->showExportDialog();
 
-    if (m_exportDialog->m_dialogCompleted == true)
-    {
-        updateTable();
-        qDebug() << "Path and Filename from ExportDialog: " << m_exportDialog->getValue();
-        QString pathAndName = m_exportDialog->getValue();
-        QStringList qslPathAndName = pathAndName.split(";");
-        qDebug() << qslPathAndName;
+    //    if (m_exportDialog->m_dialogCompleted == true)
+    //    {
+    //        updateTable();
+    //        qDebug() << "Path and Filename from ExportDialog: " << m_exportDialog->getValue();
+    //        QString pathAndName = m_exportDialog->getValue();
+    //        QStringList qslPathAndName = pathAndName.split(";");
+    //        qDebug() << qslPathAndName;
 
-        if (qslPathAndName[2] == ".csv")
-        {
-            m_parserCsv = new ParserCsv();
-            m_parserCsv->saveTable(qslPathAndName[0], qslPathAndName[1], qslPathAndName[2], m_table);
-            m_parserCsv->~ParserCsv();
-        }
-        //else if (z.B. .xml)
-    }
-    else
-    {
-        return;
-    }
+    //        if (qslPathAndName[2] == ".csv")
+    //        {
+    //            m_parserCsv = new ParserCsv();
+    //            m_parserCsv->saveTable(qslPathAndName[0], qslPathAndName[1], qslPathAndName[2], m_table);
+    //            m_parserCsv->~ParserCsv();
+    //        }
+    //        //else if (z.B. .xml)
+    //    }
+    //    else
+    //    {
+    //        return;
+    //    }
+
+
+
+    updateTable();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Tabelle speichern"), "C:/", tr("CSV Files (*.csv);;All Files (*)"));
+    qDebug() << "Path and Filename from ExportDialog: " << fileName;
+    m_parserCsv = new ParserCsv();
+    m_parserCsv->saveTable(fileName, m_table);
+    m_parserCsv->~ParserCsv();
+
+}
+
+
+void MainWindow::openFileDialog()
+{
+    qDebug() << "openTable clicked...";
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Datei öffnen"), "C:/", tr("CSV Files (*.csv)"));
+    getParser(fileName);
 }
 
 /******************************************************************************
@@ -90,7 +109,7 @@ void MainWindow::doubleclickEvent()
         if (info.isFile())
         {
             path = info.absoluteFilePath();
-            qDebug() << path;
+            qDebug() << "doubleclickEvent() " << path;
             //            if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
             //            {
             //                if (contentWarnung("doubleClick"))
@@ -116,7 +135,7 @@ void MainWindow::eintragSuchen()
     QString temp = ui->sucheLineEdit->text();
     if (temp != "" && m_searchResults.empty())
     {
-        goToFirstElement:;
+goToFirstElement:;
         qDebug() << "eintragSuchen called!";
         qDebug() << temp;
 
@@ -211,13 +230,13 @@ void MainWindow::getParser(QString path)
         }
         else if (path.contains(".xml"))
         {
-            m_parserXml = new ParserXml();
-            m_parserXml->loadTable(path);
-            qDebug() << "Imported File is a .xml File!";
-            m_parserXml->~ParserXml();
+            //            m_parserXml = new ParserXml();
+            //            m_parserXml->loadTable(path);
+            //            qDebug() << "Imported File is a .xml File!";
+            //            m_parserXml->~ParserXml();
 
-//            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
-//            beruecksichtigt worden.
+            //            Stuerzt momentan noch beim initialen Aufrufen einer XML-Datei ab. Vermutlich sind noch diverse Abhaengigkeiten nicht
+            //            beruecksichtigt worden.
 
             qDebug() << "Doppelklick auf XML-Datei!";
 
@@ -594,7 +613,7 @@ callerQuery:
             return false;
         }
 
-        message:;
+message:;
         QMessageBox::StandardButton antwort;
         antwort = QMessageBox::warning(this,"Warnung vor Datenverlust!", callerMessage,
                                        QMessageBox::Ok | QMessageBox::Abort);

@@ -60,6 +60,7 @@ private:
 //    ParserCsv getMemberParser(){return m_parserCsv;}
 
 
+
 public slots:
     void getParser(QString path);
 
@@ -77,6 +78,7 @@ private slots:
     void modifyBtns();
     void updateTable();
     void callExportDlg();
+    void openFileDialog();
 };
 
 #endif // MAINWINDOW_H
