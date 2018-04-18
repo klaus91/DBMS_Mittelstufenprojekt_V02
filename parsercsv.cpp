@@ -64,19 +64,22 @@ QList<QStringList> ParserCsv::readFile(QFile &file)
 
     while (!in.atEnd())
     {
-        QString line = in.readLine();
+//        QString line = in.readLine();
 
-        if(line.contains(";;"))
-        {
-            qDebug() << "Fehler! Datei nicht kompatibel.";
-            file.close();
-            break;
-        }
-        else if(line.contains(";"))
-        {
-            QStringList columns(line.split(";", QString::SkipEmptyParts));
-            lines.append(columns);
-        }
+        QStringList columns(in.readLine().split(";", QString::KeepEmptyParts));
+        lines.append(columns);
+
+//        if(line.contains(";;"))
+//        {
+//            qDebug() << "Fehler! Datei nicht kompatibel.";
+//            file.close();
+//            break;
+//        }
+//        else if(line.contains(";"))
+//        {
+//            QStringList columns(line.split(";", QString::SkipEmptyParts));
+//            lines.append(columns);
+//        }
     }
     file.close();
     return lines;
@@ -140,7 +143,7 @@ void ParserCsv::createFile(QString fileName, const QList<QStringList> table)
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly))
         {
-//            int ret = QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            //            int ret = QMessageBox::information(this, tr("Unable to open file"), file.errorString());
             return;
         }
         writeFile(file, table);
