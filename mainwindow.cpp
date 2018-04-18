@@ -89,9 +89,21 @@ void MainWindow::callExportDlg()
 
 void MainWindow::openFileDialog()
 {
-    qDebug() << "openTable clicked...";
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Datei öffnen"), "C:/", tr("CSV Files (*.csv)"));
-    getParser(fileName);
+    if (!m_tableLoaded)
+    {
+        qDebug() << "openTable clicked with no Table loaded...";
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Datei öffnen"), "C:/", tr("CSV Files (*.csv)"));
+        getParser(fileName);
+    }
+    else
+    {
+        if (contentWarnung("doubleClick"))
+        {
+            qDebug() << "openTable clicked with no Table loaded...";
+            QString fileName = QFileDialog::getOpenFileName(this, tr("Datei öffnen"), "C:/", tr("CSV Files (*.csv)"));
+            getParser(fileName);
+        }
+    }
 }
 
 /******************************************************************************
@@ -298,54 +310,65 @@ void MainWindow::showTable()
 void MainWindow::tabelleAnlegen()
 {
     qDebug() << "Tabelle anlegen clicked!";
-    //    if (contentWarnung("neueTabelle"))
-    //    {
-    m_newTableDialog->showNewTableDialog();
-    if (m_newTableDialog->m_dialogCompleted == true)
+
+    if (!m_tableLoaded)
     {
-        QString rcCount = m_newTableDialog->getValue();
-        QStringList rcCountSL = rcCount.split(";");
-        //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
-        QString zeileString = rcCountSL[0];
-        QString spalteString = rcCountSL[1];
-        //qDebug() << zeileString + " und " + spalteString;
+        newTable: //Goto for when a table is loaded and the user confirms the contentWarnung
 
-        const int anzahlSpalten = spalteString.toInt();
-        const int anzahlZeilen = zeileString.toInt();
-
-        qDebug() << "Zeilen: " << anzahlZeilen;
-        qDebug() << "Spalten: " << anzahlSpalten;
-
-        QList<QStringList> list;
-        QString temp = "";
-        m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
-
-        // macht aus m_table eine QList of QStringList aus leeren QStrings
-        for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
+        m_newTableDialog->showNewTableDialog();
+        if (m_newTableDialog->m_dialogCompleted == true)
         {
-            QStringList sList;
-            for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+            QString rcCount = m_newTableDialog->getValue();
+            QStringList rcCountSL = rcCount.split(";");
+            //qDebug() << rcCountSL[0] + " " + rcCountSL[1];
+            QString zeileString = rcCountSL[0];
+            QString spalteString = rcCountSL[1];
+            //qDebug() << zeileString + " und " + spalteString;
+
+            const int anzahlSpalten = spalteString.toInt();
+            const int anzahlZeilen = zeileString.toInt();
+
+            qDebug() << "Zeilen: " << anzahlZeilen;
+            qDebug() << "Spalten: " << anzahlSpalten;
+
+            QList<QStringList> list;
+            QString temp = "";
+            m_StdItemModel = new QStandardItemModel(anzahlZeilen - 1, anzahlSpalten, this);
+
+            // macht aus m_table eine QList of QStringList aus leeren QStrings
+            for (int outerCounter = 0; outerCounter < anzahlZeilen; ++outerCounter)
             {
-                m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
-                sList.append(temp);
+                QStringList sList;
+                for (int innerCounter = 0; innerCounter < anzahlSpalten; ++innerCounter)
+                {
+                    m_StdItemModel->setItem(outerCounter, innerCounter, new QStandardItem (""));
+                    sList.append(temp);
+                }
+                list.append(sList);
             }
-            list.append(sList);
+            m_table = list;
+
+            showTable();
+
+            m_anzahlZeilen = anzahlZeilen;
+            m_anzahlSpalten = anzahlSpalten;
+            m_tableLoaded = true;
+            modifyBtns();
         }
-        m_table = list;
 
-        showTable();
-
-        m_anzahlZeilen = anzahlZeilen;
-        m_anzahlSpalten = anzahlSpalten;
-        m_tableLoaded = true;
-        modifyBtns();
+        else
+        {
+            return;
+        }
     }
-
     else
     {
-        return;
+        if (contentWarnung("neueTabelle"))
+        {
+            goto newTable;
+        }
+
     }
-    //    }
 }
 
 /******************************************************************************
