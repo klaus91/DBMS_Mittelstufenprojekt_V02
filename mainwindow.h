@@ -36,29 +36,28 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void showDirectory();
+
+
+private:
     void showTable();
     bool contentWarnung(QString caller);
 
-    QList<QStringList>  m_table;
+    Ui::MainWindow      *ui;
     ParserCsv           *m_parserCsv;
     ParserXml           *m_parserXml;
-    bool                m_tableLoaded = false;
-    QStringList         m_searchResults;
-
-private:
-    Ui::MainWindow      *ui;
     ExportDialog        *m_exportDialog;
     NewTableDialog      *m_newTableDialog;
     QFileSystemModel    *m_FSystemModel;
     QStandardItemModel  *m_StdItemModel;
-
+    QList<QStringList>  m_table;
+    QStringList         m_searchResults;
+    bool                m_tableLoaded = false;
     int                 m_anzahlZeilen;
     int                 m_anzahlSpalten;
+
+
 //    QList<QStringList> getMemberTable(){return m_table;}
-
-
 //    ParserCsv getMemberParser(){return m_parserCsv;}
-
 
 
 public slots:

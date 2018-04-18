@@ -112,11 +112,20 @@ void MainWindow::doubleclickEvent()
             qDebug() << "doubleclickEvent() " << path;
             //            if (path.contains(".csv")) //this query needs all format types when more formats are added (|| .xml)!
             //            {
-            //                if (contentWarnung("doubleClick"))
-            //                {
-            //                }
-            getParser(path);
             //            }
+            if (!m_tableLoaded)
+            {
+                getParser(path);
+            }
+            else
+            {
+                if (contentWarnung("doubleClick"))
+                {
+                    getParser(path);
+                }
+            }
+
+
         }
     }
     else
